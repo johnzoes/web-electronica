@@ -33,11 +33,34 @@ class Reserva {
         return $stmt->execute();
     }
 
+
     public static function delete($id) {
-        $stmt = self::$conexion->prepare("DELETE FROM reserva WHERE id_reserva = ?");
-        $stmt->bind_param("i", $id);
-        return $stmt->execute();
+
+/*eliminar primero el estado
+        $stmtDeleteEstado = self::$conexion->prepare("DELETE FROM estado_reserva WHERE id_reserva = ?");
+        $stmtDeleteEstado->bind_param("i", $id);
+        $stmtDeleteEstado->execute();
+        $stmtDeleteEstado->close();
+
+        // Eliminar detalles de reserva primero
+        $stmtDeleteDetalle = self::$conexion->prepare("DELETE FROM detalle_reserva_item WHERE id_reserva = ?");
+        $stmtDeleteDetalle->bind_param("i", $id);
+        $stmtDeleteDetalle->execute();
+        $stmtDeleteDetalle->close();
+*/
+
+
+        // Luego eliminar la reserva
+        $stmtDeleteReserva = self::$conexion->prepare("DELETE FROM reserva WHERE id_reserva = ?");
+        $stmtDeleteReserva->bind_param("i", $id);
+        $success = $stmtDeleteReserva->execute();
+        $stmtDeleteReserva->close();
+    
+        return $success;
     }
+
+
+    
 }
 
 Reserva::init();

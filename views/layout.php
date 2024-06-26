@@ -23,9 +23,6 @@
                         <li class="nav-item">
                             <a class="nav-link" href="index.php?controller=salon&action=index">Salones</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="index.php?controller=prestamo&action=index">Préstamo</a>
-                        </li>
 
                         <li class="nav-item">
                             <a class="nav-link" href="index.php?controller=reserva&action=index">Reserva</a>
