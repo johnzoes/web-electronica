@@ -147,4 +147,4 @@ switch ($action) {
         // Manejar casos de acción no válidos
         // Aquí puedes redirigir a una página de error o hacer otra acción apropiada
 }
-?>
+?>  

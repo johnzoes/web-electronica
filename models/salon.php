@@ -40,4 +40,4 @@ class Salon {
 }
 
 Salon::init();
-?>
+

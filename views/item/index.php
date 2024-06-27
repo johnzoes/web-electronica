@@ -7,7 +7,13 @@
                 <th>Código BCI</th>
                 <th>Descripción</th>
                 <th>Cantidad</th>
-                <!-- Agrega aquí las demás columnas según tus necesidades -->
+                <th>Estado</th>
+                <th>Marca</th>
+                <th>Modelo</th>
+                <th>Imagen</th>
+                <th>Ubicación</th>
+                <th>Nro. Inventariado</th>
+                <th>Categoría</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -15,13 +21,23 @@
             <?php if ($items): ?>
                 <?php foreach ($items as $item): ?>
                     <tr>
-                        <td><?php echo $item['codigo_bci']; ?></td>
-                        <td><?php echo $item['descripcion']; ?></td>
-                        <td><?php echo $item['cantidad']; ?></td>
-                        <!-- Agrega aquí las demás columnas según tus necesidades -->
+                        <td><?php echo htmlspecialchars($item['codigo_bci'], ENT_QUOTES, 'UTF-8'); ?></td>
+                        <td><?php echo htmlspecialchars($item['descripcion'], ENT_QUOTES, 'UTF-8'); ?></td>
+                        <td><?php echo htmlspecialchars($item['cantidad'], ENT_QUOTES, 'UTF-8'); ?></td>
+                        <td><?php echo htmlspecialchars($item['estado'], ENT_QUOTES, 'UTF-8'); ?></td>
+                        <td><?php echo htmlspecialchars($item['marca'], ENT_QUOTES, 'UTF-8'); ?></td>
+                        <td><?php echo htmlspecialchars($item['modelo'], ENT_QUOTES, 'UTF-8'); ?></td>
                         <td>
-                            <a href="index.php?controller=item&action=edit&id=<?php echo $item['id_item']; ?>" class="btn btn-primary">Editar</a>
-                            <form action="index.php?controller=item&action=delete&id=<?php echo $item['id_item']; ?>" method="POST" style="display: inline-block;">
+                            <?php if (!empty($item['imagen'])): ?>
+                                <img src="<?php echo htmlspecialchars($item['imagen'], ENT_QUOTES, 'UTF-8'); ?>" alt="Imagen" width="50">
+                            <?php endif; ?>
+                        </td>
+                        <td><?php echo htmlspecialchars($item['id_ubicacion'], ENT_QUOTES, 'UTF-8'); ?></td>
+                        <td><?php echo htmlspecialchars($item['nro_inventariado'], ENT_QUOTES, 'UTF-8'); ?></td>
+                        <td><?php echo htmlspecialchars($item['id_categoria'], ENT_QUOTES, 'UTF-8'); ?></td>
+                        <td>
+                            <a href="index.php?controller=item&action=edit&id=<?php echo htmlspecialchars($item['id_item'], ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-primary">Editar</a>
+                            <form action="index.php?controller=item&action=delete&id=<?php echo htmlspecialchars($item['id_item'], ENT_QUOTES, 'UTF-8'); ?>" method="POST" style="display: inline-block;">
                                 <button type="submit" class="btn btn-danger">Eliminar</button>
                             </form>
                         </td>
@@ -29,7 +45,7 @@
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="4">No hay items disponibles</td>
+                    <td colspan="11">No hay items disponibles</td>
                 </tr>
             <?php endif; ?>
         </tbody>

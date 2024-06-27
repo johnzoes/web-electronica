@@ -53,7 +53,10 @@ class ItemController {
             $estado = $_POST['estado'];
             $marca = $_POST['marca'];
             $modelo = $_POST['modelo'];
-            $id_salon = $_POST['id_salon'];
+            /* primero al seleccionar el id_salon filtramos ya por un salon, y cuando seleccionamos un armario 
+            nos muestra solo los armarios d dicho salon, entonces al seleccionar un armario este armario ya tiene 
+            la ubicacion en sí
+            */
             $id_ubicacion = $_POST['id_armario'];
             $nro_inventariado = $_POST['nro_inventariado'];
             $id_categoria = $_POST['id_categoria'];
@@ -82,12 +85,19 @@ class ItemController {
 
     public function edit($id) {
         $item = Item::find($id);
+        $salones = Salon::all();
         $view = 'views/item/edit.php';
         require_once 'views/layout.php';
     }
 
     public function update($id) {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+
+            $imagen = $_FILES['imagen']['name'];
+
+
+
             $data = [
                 'codigo_bci' => $_POST['codigo_bci'],
                 'descripcion' => $_POST['descripcion'],
@@ -95,9 +105,11 @@ class ItemController {
                 'estado' => $_POST['estado'],
                 'marca' => $_POST['marca'],
                 'modelo' => $_POST['modelo'],
-                'imagen' => $_POST['imagen'],
+                'imagen' => $imagen,
                 'nro_inventariado' => $_POST['nro_inventariado'],
-                'id_ubicacion' => $_POST['id_ubicacion'],
+
+                /*el armario ya tiene la ubi */
+                'id_ubicacion' => $_POST['id_armario'],
                 'id_categoria' => $_POST['id_categoria']
             ];
 
@@ -131,4 +143,4 @@ class ItemController {
 
 
 }
-?>
+
