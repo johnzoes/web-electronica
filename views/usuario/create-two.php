@@ -11,7 +11,7 @@
 </head>
 <body>
 <div class="container mt-5">
-    <h2>Crear Usuario - Paso 2  idrol = <?php echo $_SESSION['id_rol'] ?> </h2>
+    <h2>Crear Usuario - Paso 2</h2>
     <form action="index.php?controller=usuario&action=store_two" method="POST">
         <div class="form-group">
             <label for="nombre_usuario">Nombre de Usuario:</label>

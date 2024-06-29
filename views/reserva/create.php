@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -72,7 +70,8 @@
                 <option value="" selected disabled>Selecciona un profesor</option>
                 <?php foreach ($profesores as $profesor): ?>
                     <option value="<?php echo htmlspecialchars($profesor['id_profesor'], ENT_QUOTES, 'UTF-8'); ?>">
-                        <?php echo htmlspecialchars($profesor['id_usuario'], ENT_QUOTES, 'UTF-8'); ?>
+                        <!-- <?php echo htmlspecialchars($profesor['id_usuario'], ENT_QUOTES, 'UTF-8'); ?> -->
+                       <?php echo $_SESSION['user_id'] ?>
                     </option>
                 <?php endforeach; ?>
             </select>

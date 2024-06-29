@@ -37,6 +37,22 @@ class DetalleReservaItem {
         $stmt->bind_param("i", $id);
         return $stmt->execute();
     }
+
+    public static function findByReserva($id) {
+        $stmt = self::$conexion->prepare("SELECT * FROM detalle_reserva_item WHERE id_reserva = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        
+        $result = $stmt->get_result();
+        $detalles = [];
+        
+        while ($detalle = $result->fetch_assoc()) {
+            $detalles[] = $detalle;
+        }
+        
+        return $detalles;
+    }
+    
 }
 
 DetalleReservaItem::init();

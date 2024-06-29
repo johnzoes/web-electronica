@@ -39,7 +39,17 @@ class AuthController {
                         $_SESSION['user_id'] = $user['id_usuario'];
                         $_SESSION['username'] = $user['nombre_usuario'];
                         $_SESSION['role'] = $user['id_rol'];
-                        header('Location: index.php?controller=item&action=index');
+
+                         // Redirigir según el rol
+                    if
+                     ($user['id_rol'] == 2) { // Si el rol es para asistente
+                        header('Location: index.php?controller=asistente&action=index');
+
+                    } else if 
+                    ($user['id_rol'] == 3)  { // Si el rol es para profesor
+                        header('Location: index.php?controller=profesor&action=index');
+                     }
+                
                         exit;
                     } else {
                         // Contraseña incorrecta para el usuario no administrador

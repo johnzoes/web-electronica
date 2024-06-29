@@ -13,7 +13,6 @@ require_once 'models/estado_reserva.php';
                 <th>ID</th>
                 <th>Fecha de Prestamo</th>
                 <th>Estado</th>
-
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -21,7 +20,6 @@ require_once 'models/estado_reserva.php';
             <?php foreach ($reservas as $reserva): ?>
                 <?php 
                     $estado = EstadoReserva::getEstadoByReserva($reserva['id_reserva']);
-                    
                     ?>
             <tr>
                 <td><?php echo $reserva['id_reserva']; ?></td>
