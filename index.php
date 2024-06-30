@@ -25,9 +25,6 @@ switch ($controller) {
     case 'profesor':
         $controller = new ProfesorController();
         break;
-    case 'curso':
-        $controller = new CursoController();
-        break;
     case 'categoria':
         $controller = new CategoriaController();
         break;
@@ -147,4 +144,4 @@ switch ($action) {
         // Manejar casos de acción no válidos
         // Aquí puedes redirigir a una página de error o hacer otra acción apropiada
 }
-?>  
+
