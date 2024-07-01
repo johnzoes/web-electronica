@@ -3,16 +3,25 @@ require_once 'models/detalle_reserva_item.php';
 require_once 'models/reserva.php';
 require_once 'models/unidad_didactica.php';
 
+// Obtener la reserva
 $reserva = Reserva::find($_GET['id']);
 
+// Obtener los detalles de la reserva
 $detalle_reserva_items = DetalleReservaItem::findByReserva($_GET['id']);
 
-
+// Obtener la unidad didáctica
 $unidadDidactica = UnidadDidactica::find($reserva['id_unidad_didactica']);
 
 
-?>
+foreach ($detalle_reserva_items as $detalle) {
+    $items[] = Item::find($detalle['id_item']);
+}
+// Definir las variables $items, $profesores y $turnos
 
+/*
+$profesores =  Código para obtener los profesores ;
+$turnos =  Código para obtener los turnos */;
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -40,11 +49,11 @@ $unidadDidactica = UnidadDidactica::find($reserva['id_unidad_didactica']);
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($detalle_reserva_items as $detalle): ?>
                     <tr>
                         <td>
                             <select class="form-control" name="item[]" required>
                                 <option value="" selected disabled>Selecciona un ítem</option>
+
                                 <?php foreach ($items as $item): ?>
                                     <option value="<?php echo htmlspecialchars($item['id_item'], ENT_QUOTES, 'UTF-8'); ?>" <?php echo $item['id_item'] == $detalle['id_item'] ? 'selected' : ''; ?>>
                                         <?php echo htmlspecialchars($item['descripcion'], ENT_QUOTES, 'UTF-8'); ?>
@@ -52,12 +61,13 @@ $unidadDidactica = UnidadDidactica::find($reserva['id_unidad_didactica']);
                                 <?php endforeach; ?>
                             </select>
                         </td>
-            
+                        <td>
+                            <input type="number" class="form-control" name="cantidad[]" min="1" value="<?php echo htmlspecialchars($detalle['cantidad'], ENT_QUOTES, 'UTF-8'); ?>" required>
+                        </td>
                         <td>
                             <button type="button" class="btn btn-danger remove-item">Eliminar</button>
                         </td>
                     </tr>
-                <?php endforeach; ?>
             </tbody>
         </table>
 
@@ -74,11 +84,10 @@ $unidadDidactica = UnidadDidactica::find($reserva['id_unidad_didactica']);
             </select>
         </div>
 
-        <div class="form-group" id="div_unidad_didactica" style="display: none;">
+        <div class="form-group" id="div_unidad_didactica" >
             <label for="unidad_didactica">Unidad Didáctica:</label>
             <select class="form-control" id="unidad_didactica" name="unidad_didactica" required>
-                <option value="" disabled>Selecciona una Unidad Didáctica</option>
-                <!-- Las opciones se llenarán dinámicamente -->
+                <option value="<?php echo htmlspecialchars($unidadDidactica['id_unidad_didactica'], ENT_QUOTES, 'UTF-8'); ?>" selected><?php echo htmlspecialchars($unidadDidactica['nombre'], ENT_QUOTES, 'UTF-8'); ?></option>
             </select>
         </div>
 
