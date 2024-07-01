@@ -13,135 +13,46 @@ require_once 'controllers/UsuarioController.php';
 require_once 'controllers/AuthController.php';
 require_once 'controllers/AsistenteController.php';
 
+$controllerName = isset($_GET['controller']) ? htmlspecialchars($_GET['controller']) : 'categoria';
+$actionName = isset($_GET['action']) ? htmlspecialchars($_GET['action']) : 'index';
 
-$controller = isset($_GET['controller']) ? $_GET['controller'] : 'categoria';
-$action = isset($_GET['action']) ? $_GET['action'] : 'index';
+$controllers = [
+    'item' => 'ItemController',
+    'profesor' => 'ProfesorController',
+    'categoria' => 'CategoriaContrloller',
+    'prestamo' => 'PrestamoController',
+    'reserva' => 'ReservaController',
+    'ubicacion' => 'UbicacionController',
+    'salon' => 'SalonController',
+    'unidad_didactica' => 'UnidadDidacticaController',
+    'usuario' => 'UsuarioController',
+    'rol' => 'RolController',
+    'detalle_reserva_item' => 'DetalleReservaItemController',
+    'asistente' => 'AsistenteController',
+    'auth' => 'AuthController'
+];
 
-// Crear instancia del controlador según el parámetro 'controller'
-switch ($controller) {
-    case 'item':
-        $controller = new ItemController();
-        break;
-    case 'profesor':
-        $controller = new ProfesorController();
-        break;
-    case 'categoria':
-        $controller = new CategoriaController();
-        break;
-    case 'prestamo':
-        $controller = new PrestamoController(); 
-        break;
-    case 'reserva':
-        $controller = new ReservaController();
-        break;
-    case 'ubicacion':
-        $controller = new UbicacionController();
-        break;
-    case 'salon':
-        $controller = new SalonController();
-        break;
-    case 'unidad_didactica':
-        $controller = new UnidadDidacticaController();
-        break;
-    case 'usuario':
-        $controller = new UsuarioController();           
-        break;
-    case 'rol':
-        $controller = new RolController();
-        break;
-    case 'detalle_reserva_item':
-        $controller = new DetalleReservaItemController();
-        break;
-    case 'asistente':
-        $controller = new asistenteController();
-        break;
+if (array_key_exists($controllerName, $controllers)) {
+    $controllerClass = $controllers[$controllerName];
+    $controller = new $controllerClass();
 
-    case 'auth':
-            $controller = new authController();
-            break;
-
-
-
-
-    default:
-        // Controlador predeterminado en caso de que no se proporcione uno válido en la URL
-}
-
-// Ejecutar la acción correspondiente en el controlador
-switch ($action) {
-    case 'index':
-        $controller->index();
-        break;
-
-    case 'edit':
-        if (isset($_GET['id'])) {
-            $id = $_GET['id'];
-            $controller->edit($id);
-        } else {
-            // Manejar el caso en el que no se proporciona un ID
-            // Aquí puedes redirigir a una página de error o hacer otra acción apropiada
-        }
-        break;
-
-        case 'obtener_armario':
-            if (method_exists($controller, 'obtener_armario')) {
-                $controller->obtener_armario();
+    if (method_exists($controller, $actionName)) {
+        if (in_array($actionName, ['edit', 'update', 'delete'])) {
+            if (isset($_GET['id'])) {
+                $id = $_GET['id'];
+                $controller->$actionName($id);
+            } else {
+                // Handle missing ID error
+                echo "Error: ID is required for this action.";
             }
-            break;         
-
-    case 'create':
-        $controller->create();
-        break;
-        case 'create_two':
-            $controller->create_two();
-            break;
-
-    case 'update':
-        if (isset($_GET['id'])) {
-            $id = $_GET['id'];
-            $controller->update($id);
         } else {
-            // Manejar el caso en el que no se proporciona un ID
-            // Aquí puedes redirigir a una página de error o hacer otra acción apropiada
+            $controller->$actionName();
         }
-        break;
-
-    case 'store':
-        $controller->store();
-        break;
-        
-        case 'store_two':
-            $controller->store_two();
-            break;
-    case 'authenticate':
-            $controller->authenticate();
-            break;
-
-    case 'delete':
-        if (isset($_GET['id'])) {
-            $id = $_GET['id'];
-            $controller->delete($id);
-
-        } else {
-            // Manejar el caso en el que no se proporciona un ID
-            // Aquí puedes redirigir a una página de error o hacer otra acción apropiada
-        }
-        break;
-
-
-        case 'login':
-
-            $controller->login();
-            break;
-
-        case'obtener_unidad_didactica':
-            if (method_exists($controller, 'obtener_unidad_didactica')) {
-                $controller->obtener_unidad_didactica();
-            }
-            break;   
-    default:
-
-        // Manejar casos de acción no válidos
-        // Aquí puedes redirigir a una página de error o hacer otra acción apropiada
+    } else {
+        // Handle invalid action
+        echo "Error: Action '$actionName' not found in controller '$controllerClass'.";
+    }
+} else {
+    // Handle invalid controller
+    echo "Error: Controller '$controllerName' not found.";
 }
-
