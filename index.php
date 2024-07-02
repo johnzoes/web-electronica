@@ -1,10 +1,10 @@
 <?php
-require_once 'controllers/CategoriaController.php';
-require_once 'controllers/ProfesorController.php';
-require_once 'controllers/DetalleReservaItemController.php';
-require_once 'controllers/ItemController.php';
-require_once 'controllers/PrestamoController.php';
-require_once 'controllers/ReservaController.php';
+require_once 'controllers/categoriaController.php';
+require_once 'controllers/profesorController.php';
+require_once 'controllers/detalleReservaItemController.php';
+require_once 'controllers/itemController.php';
+require_once 'controllers/prestamoController.php';
+require_once 'controllers/reservaController.php';
 require_once 'controllers/RolController.php';
 require_once 'controllers/SalonController.php';
 require_once 'controllers/UbicacionController.php';
