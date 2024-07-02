@@ -1,17 +1,17 @@
 <?php
-require_once 'controllers/CategoriaController.php';
-require_once 'controllers/ProfesorController.php';
-require_once 'controllers/DetalleReservaItemController.php';
-require_once 'controllers/ItemController.php';
-require_once 'controllers/PrestamoController.php';
-require_once 'controllers/ReservaController.php';
-require_once 'controllers/RolController.php';
-require_once 'controllers/SalonController.php';
-require_once 'controllers/UbicacionController.php';
-require_once 'controllers/UnidadDidacticaController.php';
-require_once 'controllers/UsuarioController.php';
-require_once 'controllers/AuthController.php';
-require_once 'controllers/AsistenteController.php';
+require_once 'controllers/categoriaController.php';
+require_once 'controllers/profesorController.php';
+require_once 'controllers/detalleReservaItemController.php';
+require_once 'controllers/itemController.php';
+require_once 'controllers/prestamoController.php';
+require_once 'controllers/reservaController.php';
+require_once 'controllers/rolController.php';
+require_once 'controllers/salonController.php';
+require_once 'controllers/ubicacionController.php';
+require_once 'controllers/unidadDidacticaController.php';
+require_once 'controllers/usuarioController.php';
+require_once 'controllers/authController.php';
+require_once 'controllers/asistenteController.php';
 
 $controllerName = isset($_GET['controller']) ? htmlspecialchars($_GET['controller']) : 'categoria';
 $actionName = isset($_GET['action']) ? htmlspecialchars($_GET['action']) : 'index';
@@ -19,7 +19,7 @@ $actionName = isset($_GET['action']) ? htmlspecialchars($_GET['action']) : 'inde
 $controllers = [
     'item' => 'ItemController',
     'profesor' => 'ProfesorController',
-    'categoria' => 'CategoriaContrloller',
+    'categoria' => 'CategoriaController',
     'prestamo' => 'PrestamoController',
     'reserva' => 'ReservaController',
     'ubicacion' => 'UbicacionController',
