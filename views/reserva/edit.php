@@ -11,11 +11,13 @@ $detalle_reserva_items = DetalleReservaItem::findByReserva($_GET['id']);
 
 // Obtener la unidad didáctica
 $unidadDidactica = UnidadDidactica::find($reserva['id_unidad_didactica']);
-
+$unidadesDidacticaByCiclo = UnidadDidactica::findUnidadDidacticaByCiclo($unidadDidactica['ciclo']);
 
 foreach ($detalle_reserva_items as $detalle) {
     $items[] = Item::find($detalle['id_item']);
 }
+
+$turnos = Turno::all();
 // Definir las variables $items, $profesores y $turnos
 
 /*
@@ -84,10 +86,14 @@ $turnos =  Código para obtener los turnos */;
             </select>
         </div>
 
-        <div class="form-group" id="div_unidad_didactica" >
+        <div class="form-group" id="div_unidad_didactica">
             <label for="unidad_didactica">Unidad Didáctica:</label>
             <select class="form-control" id="unidad_didactica" name="unidad_didactica" required>
-                <option value="<?php echo htmlspecialchars($unidadDidactica['id_unidad_didactica'], ENT_QUOTES, 'UTF-8'); ?>" selected><?php echo htmlspecialchars($unidadDidactica['nombre'], ENT_QUOTES, 'UTF-8'); ?></option>
+            <?php foreach ($unidadesDidacticaByCiclo as $unidadCiclo): ?>
+
+                <option value="<?php echo htmlspecialchars($unidadCiclo['id_unidad_didactica'], ENT_QUOTES, 'UTF-8'); ?>" selected><?php echo htmlspecialchars($unidadCiclo['nombre'], ENT_QUOTES, 'UTF-8'); ?></option>
+                <?php endforeach; ?>
+
             </select>
         </div>
 

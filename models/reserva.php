@@ -36,7 +36,8 @@ class Reserva {
 
     public static function delete($id) {
 
-/*eliminar primero el estado
+
+        //primero eliminar el estado de la reserva que se crea con el id_reserva
         $stmtDeleteEstado = self::$conexion->prepare("DELETE FROM estado_reserva WHERE id_reserva = ?");
         $stmtDeleteEstado->bind_param("i", $id);
         $stmtDeleteEstado->execute();
@@ -47,7 +48,6 @@ class Reserva {
         $stmtDeleteDetalle->bind_param("i", $id);
         $stmtDeleteDetalle->execute();
         $stmtDeleteDetalle->close();
-*/
 
 
         // Luego eliminar la reserva
@@ -64,4 +64,3 @@ class Reserva {
 }
 
 Reserva::init();
-?>

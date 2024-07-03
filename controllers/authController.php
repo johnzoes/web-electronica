@@ -47,7 +47,7 @@ class AuthController {
 
                     } else if 
                     ($user['id_rol'] == 3)  { // Si el rol es para profesor
-                        header('Location: index.php?contspsroller=profesor&action=index');
+                        require 'views/view_profesor/index.php';
                      }
                 
                         exit;
