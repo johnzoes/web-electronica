@@ -6,6 +6,10 @@ require_once 'models/ubicacion.php';
 class ItemController {
 
 
+    public function __construct($authorizationMiddleware) {
+        $this->authorizationMiddleware = $authorizationMiddleware;
+    }
+    
     public function todo() {
         // Obtener el parámetro de la categoría seleccionada
        
