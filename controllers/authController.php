@@ -11,67 +11,68 @@ class AuthController {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $nombre_usuario = $_POST['nombre_usuario'];
             $password = $_POST['password'];
-    
+
             // Buscar el usuario por nombre de usuario
             $user = Usuario::findByUsername($nombre_usuario);
-    
-            // Verificar si el usuario existe
-            if ($user) {
-                // Iniciar la sesión
-                session_start();
-    
-                if ($user['id_rol'] == 1) { // Si el rol es administrador
-                    if ($user['password'] == $password) {
-                        // Establecer la sesión para el administrador
-                        $_SESSION['user_id'] = $user['id_usuario'];
-                        $_SESSION['username'] = $user['nombre_usuario'];
-                        $_SESSION['role'] = $user['id_rol'];
-                        header('Location: index.php?controller=item&action=index');
-                        exit;
-                    } else {
-                        // Contraseña incorrecta para el administrador
-                        $error = "Invalid username or password";
-                        require_once 'views/login.php';
-                    }
-                } else { // Si el rol no es administrador, verificar la contraseña
-                    if (password_verify($password, $user['password'])) {
-                        // Establecer la sesión para el usuario no administrador
-                        $_SESSION['user_id'] = $user['id_usuario'];
-                        $_SESSION['username'] = $user['nombre_usuario'];
-                        $_SESSION['role'] = $user['id_rol'];
 
-                         // Redirigir según el rol
-                    if
-                     ($user['id_rol'] == 2) { // Si el rol es para asistente
-                        header('Location: index.php?controller=asistente&action=index');
-
-                    } else if 
-                    ($user['id_rol'] == 3)  { // Si el rol es para profesor
-                        require 'views/view_profesor/index.php';
-                     }
-                
-                        exit;
-                    } else {
-                        // Contraseña incorrecta para el usuario no administrador
-                        $error = "Invalid username or password";
-                        require_once 'views/login.php';
-                    }
-                }
+            // Verificar si el usuario existe y la contraseña es correcta
+            if ($user && $this->verifyPassword($user, $password)) {
+                $this->startUserSession($user);
+                $this->redirectUserByRole($user['id_rol']);
             } else {
-                // Usuario no encontrado, mostrar mensaje de error
-                $error = "Invalid username or password";
-                require_once 'views/login.php';
+                // Usuario o contraseña incorrectos
+                $this->showLoginError("Invalid username or password");
             }
         }
     }
-    
-    
-    
-    
+
     public function logout() {
         session_start();
         session_destroy();
         header('Location: index.php?controller=auth&action=login');
+        exit;
+    }
+
+    private function verifyPassword($user, $password) {
+        // Verificar la contraseña para el administrador sin hashing
+        if ($user['id_rol'] == 1) { // Administrador
+            return $user['password'] == $password;
+        } else { // Otros usuarios
+            return password_verify($password, $user['password']);
+        }
+    }
+
+    private function startUserSession($user) {
+        // Iniciar la sesión y establecer variables de sesión
+        session_start();
+        $_SESSION['user_id'] = $user['id_usuario'];
+        $_SESSION['username'] = $user['nombre_usuario'];
+        $_SESSION['role'] = $user['id_rol'];
+    }
+
+    private function redirectUserByRole($roleId) {
+        // Redirigir al usuario según su rol
+        switch ($roleId) {
+            case 1: // Administrador
+                header('Location: index.php?controller=item&action=index');
+                break;
+            case 2: // Asistente
+                header('Location: index.php?controller=asistente&action=index');
+                break;
+            case 3: // Profesor
+                require 'views/view_profesor/index.php';
+                break;
+            default:
+                $this->showLoginError("Unauthorized role");
+                break;
+        }
+        exit;
+    }
+
+    private function showLoginError($error) {
+        // Mostrar la página de login con un mensaje de error
+        $error;
+        require_once 'views/login.php';
         exit;
     }
 }

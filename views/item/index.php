@@ -1,3 +1,11 @@
+<?php
+session_start();
+$userId = $_SESSION['user_id'];
+$db = conexion::getInstance()->getConnection();
+$authorizationMiddleware = new AuthorizationMiddleware(new UserRole($db), new Permission($db));
+?>
+
+
 <div class="container">
     <h2>Lista de Items</h2>
     <a href="index.php?controller=item&action=create&id_categoria=<?php echo $id_categoria; ?>" class="btn btn-success mb-3">Crear Item</a>
