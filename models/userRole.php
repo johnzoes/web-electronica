@@ -9,17 +9,15 @@ class UserRole {
     public function getRoleIdByUserId($userId) {
         $roleId = null; // Inicializar la variable
         $query = "SELECT id_rol FROM usuario WHERE id_usuario = ?";
-        if ($stmt = $this->conexion->prepare($query)) {
+        if ($stmt = $this->db->prepare($query)) {
             $stmt->bind_param("i", $userId);
             $stmt->execute();
             $stmt->bind_result($roleId);
             
             if ($stmt->fetch()) {
-                // Se encontró un resultado y $roleId se ha asignado correctamente
                 $stmt->close();
                 return $roleId;
             } else {
-                // No se encontró ningún resultado
                 $stmt->close();
                 return null;
             }
@@ -27,3 +25,4 @@ class UserRole {
         return null;
     }
 }
+
