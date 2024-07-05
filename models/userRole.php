@@ -7,9 +7,18 @@ class UserRole {
     }
 
     public function getRoleIdByUserId($userId) {
-        $stmt = $this->db->prepare("SELECT id_rol FROM usuario WHERE id_usuario = ?");
-        $stmt->execute([$userId]);
-        return $stmt->fetchColumn();
+        $roleId = null; // Inicializar la variable
+
+        $query = "SELECT id_rol FROM usuario WHERE id_usuario = ?";
+        if ($stmt = $this->db->prepare($query)) {
+            $stmt->bind_param("i", $userId);
+            $stmt->execute();
+            $stmt->bind_result($roleId);
+            $stmt->fetch();
+            $stmt->close();
+            return $roleId;
+        }
+        return null;
     }
 }
 

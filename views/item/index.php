@@ -1,7 +1,9 @@
 <?php
+require_once 'config/database.php';
+
 session_start();
 $userId = $_SESSION['user_id'];
-$db = conexion::getInstance()->getConnection();
+$db= connectDatabase();
 $authorizationMiddleware = new AuthorizationMiddleware(new UserRole($db), new Permission($db));
 ?>
 
