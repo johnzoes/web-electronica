@@ -35,7 +35,7 @@ class ItemController {
     public function create() {
         // Verificar permiso antes de mostrar el formulario
         $userId = $_SESSION['user_id'];
-        if (!$this->authorizationMiddleware->checkPermission($userId, 'crear_item')) {
+        if (!$this->authorizationMiddleware->checkPermission($userId, 'create_item')) {
             throw new Exception("No tienes permiso para crear un nuevo item.");
         }
 
@@ -47,7 +47,7 @@ class ItemController {
     public function store() {
         // Verificar permiso antes de almacenar el nuevo item
         $userId = $_SESSION['user_id'];
-        if (!$this->authorizationMiddleware->checkPermission($userId, 'crear_item')) {
+        if (!$this->authorizationMiddleware->checkPermission($userId, 'create_item')) {
             throw new Exception("No tienes permiso para crear un nuevo item.");
         }
 
@@ -86,7 +86,7 @@ class ItemController {
     public function edit($id) {
         // Verificar permiso antes de permitir la edición del item
         $userId = $_SESSION['user_id'];
-        if (!$this->authorizationMiddleware->checkPermission($userId, 'editar_item')) {
+        if (!$this->authorizationMiddleware->checkPermission($userId, 'edit_item')) {
             throw new Exception("No tienes permiso para editar este item.");
         }
 
@@ -99,7 +99,7 @@ class ItemController {
     public function update($id) {
         // Verificar permiso antes de actualizar el item
         $userId = $_SESSION['user_id'];
-        if (!$this->authorizationMiddleware->checkPermission($userId, 'editar_item')) {
+        if (!$this->authorizationMiddleware->checkPermission($userId, 'edit_item')) {
             throw new Exception("No tienes permiso para editar este item.");
         }
 
@@ -129,7 +129,7 @@ class ItemController {
     public function delete($id) {
         // Verificar permiso antes de eliminar el item
         $userId = $_SESSION['user_id'];
-        if (!$this->authorizationMiddleware->checkPermission($userId, 'eliminar_item')) {
+        if (!$this->authorizationMiddleware->checkPermission($userId, 'delete_item')) {
             throw new Exception("No tienes permiso para eliminar este item.");
         }
 
