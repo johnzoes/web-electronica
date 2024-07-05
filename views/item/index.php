@@ -1,7 +1,9 @@
 <?php
-require_once 'config/database.php';
+require_once 'models/database.php';
+require_once 'models/userRole.php';
+require_once 'models/permisos.php';
+require_once 'middleware/AuthorizationMiddleware.php';
 
-session_start();
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: index.php?controller=auth&action=login');
@@ -9,18 +11,13 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $userId = $_SESSION['user_id'];
-$db= connectDatabase();
+$db = connectDatabase();
 $authorizationMiddleware = new AuthorizationMiddleware(new UserRole($db), new Permission($db));
-
-require_once 'models/database.php';
-$conexion = connectDatabase();
-$authorizationMiddleware = new AuthorizationMiddleware(new UserRole($conexion), new Permission($conexion));
 ?>
-
 
 <div class="container">
     <h2>Lista de Items</h2>
-    <a href="index.php?controller=item&action=create&id_categoria=<?php echo $id_categoria; ?>" class="btn btn-success mb-3">Crear Item</a>
+    <a href="index.php?controller=item&action=create&id_categoria=<?php echo htmlspecialchars($id_categoria, ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-success mb-3">Crear Item</a>
     <table class="table">
         <thead>
             <tr>

@@ -1,23 +1,28 @@
 <?php
-require_once 'database.php';
-
 class Permission {
-    private static $conexion;
+    private $db;
 
-    public static function init() {
-        self::$conexion = $GLOBALS['conexion'];
+    public function __construct($db) {
+        $this->db = $db;
     }
 
     public function hasPermission($roleId, $permission) {
-        $stmt = self::$conexion->prepare("SELECT COUNT(*) as cnt FROM role_permission WHERE id_rol = ? AND id_permiso = (SELECT id_permiso FROM permisos WHERE nombre = ?)");
-        if ($stmt === false) {
-            throw new Exception("Error preparando la consulta: " . self::$conexion->error);
+        // Implementar la lógica para verificar los permisos aquí
+        // Este es solo un ejemplo básico
+        $query = "SELECT * FROM role_permission WHERE id_rol = ? AND id_permiso = ?";
+        if ($stmt = $this->db->prepare($query)) {
+            $stmt->bind_param("ii", $roleId, $permission);
+            $stmt->execute();
+            $stmt->store_result();
+            if ($stmt->num_rows > 0) {
+                $stmt->close();
+                return true;
+            } else {
+                $stmt->close();
+                return false;
+            }
         }
-        $stmt->bind_param("is", $roleId, $permission);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        return $result->fetch_assoc()['cnt'] > 0;
+        return false;
     }
 }
-
-Permission::init();
+?>
