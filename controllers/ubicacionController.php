@@ -65,12 +65,11 @@ class UbicacionController {
     public function delete($id) {
         $items = Item::findByUbicacion($id);
         if (!empty($items)) {
-            // Manejar el caso donde hay items dependientes
-            echo "No se puede eliminar la ubicación porque tiene items asociados.";
+            $message = "No se puede eliminar la ubicación porque tiene items asociados.";
+            echo "<script>window.location.href='index.php?controller=ubicacion&action=index&message=" . urlencode($message) . "'</script>";
         } else {
             Ubicacion::delete($id);
-            header('Location: index.php?controller=ubicacion&action=index');
-            exit;
+            echo "<script>window.location.href='index.php?controller=ubicacion&action=index&status=success'</script>";
         }
     }
 }

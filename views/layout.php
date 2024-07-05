@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <title>Inventariado</title>
 </head>
 <body>
@@ -23,7 +24,6 @@
                         <li class="nav-item">
                             <a class="nav-link" href="index.php?controller=salon&action=index">Salones</a>
                         </li>
-
                         <li class="nav-item">
                             <a class="nav-link" href="index.php?controller=reserva&action=index">Reserva</a>
                         </li>
@@ -36,8 +36,6 @@
                         <li class="nav-item">
                             <a class="nav-link" href="index.php?controller=usuario&action=index">Usuarios</a>
                         </li>
-         
-
                     </ul>
                 </div>
             </div>
@@ -47,15 +45,11 @@
         <?php include($view); ?>
     </main>
 
-
-
     <footer class="bg-light text-center py-3">
         <p>&copy; 2024 Inventariado</p>
     </footer>
 
-    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>
-
-
