@@ -12,12 +12,17 @@ if (!isset($_SESSION['user_id'])) {
 
 $userId = $_SESSION['user_id'];
 $db = connectDatabase();
+$userRole = new UserRole($db);
+$roleId = $userRole->getRoleIdByUserId($userId);
 $authorizationMiddleware = new AuthorizationMiddleware(new UserRole($db), new Permission($db));
+$canCreateItem = ($roleId == 1 || $roleId == 2);
 ?>
 
 <div class="container">
     <h2>Lista de Items</h2>
-    <a href="index.php?controller=item&action=create&id_categoria=<?php echo htmlspecialchars($id_categoria, ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-success mb-3">Crear Item</a>
+    <?php if ($canCreateItem): ?>
+        <a href="index.php?controller=item&action=create&id_categoria=<?php echo $id_categoria; ?>" class="btn btn-success mb-3">Crear Item</a>
+    <?php endif; ?>
     <table class="table">
         <thead>
             <tr>
@@ -68,3 +73,15 @@ $authorizationMiddleware = new AuthorizationMiddleware(new UserRole($db), new Pe
         </tbody>
     </table>
 </div>
+
+<?php if (isset($_GET['message'])): ?>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: '<?php echo htmlspecialchars($_GET['message'], ENT_QUOTES, 'UTF-8'); ?>'
+            });
+        });
+    </script>
+<?php endif; ?>

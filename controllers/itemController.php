@@ -2,6 +2,7 @@
 
 require_once 'models/item.php';
 require_once 'models/ubicacion.php';
+require_once 'middleware/AuthorizationMiddleware.php';
 
 class ItemController {
 
@@ -21,8 +22,8 @@ class ItemController {
     public function index() {
         // Obtener el parámetro de la categoría seleccionada
         $id_categoria = isset($_GET['id_categoria']) ? $_GET['id_categoria'] : null;
-        $view = 'views/item/index.php';
         $items = Item::getItemsByCategoria($id_categoria);
+        $view = 'views/item/index.php';
         require_once 'views/layout.php';
     }
 
@@ -35,13 +36,14 @@ class ItemController {
     public function create() {
         // Verificar permiso antes de mostrar el formulario
         $userId = $_SESSION['user_id'];
-        if (!$this->authorizationMiddleware->checkPermission($userId, 'create_item')) {
-            throw new Exception("No tienes permiso para crear un nuevo item.");
+        if ($this->authorizationMiddleware->checkPermission($userId, 'create_item')) {
+            $id_categoria = isset($_GET['id_categoria']) ? $_GET['id_categoria'] : null;
+            $view = 'views/item/create.php';
+            require_once 'views/layout.php';
+        } else {
+            $message = "No tienes permiso para crear un nuevo item.";
+            echo "<script>window.location.href='index.php?controller=item&action=index&message=" . urlencode($message) . "'</script>";
         }
-
-        $id_categoria = isset($_GET['id_categoria']) ? $_GET['id_categoria'] : null;
-        $view = 'views/item/create.php';
-        require_once 'views/layout.php';
     }
 
     public function store() {
