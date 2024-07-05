@@ -1,15 +1,23 @@
 <?php
-class UserRole {
-    private $db;
+require_once 'database.php';
 
-    public function __construct($db) {
-        $this->db = $db;
+class UserRole {
+    private static $conexion;
+
+    public static function init() {
+        self::$conexion = $GLOBALS['conexion'];
     }
 
-    public function getRoleIdByUserId($userId) {
-        $stmt = $this->db->prepare("SELECT id_rol FROM usuario WHERE id_usuario = ?");
-        $stmt->execute([$userId]);
-        return $stmt->fetchColumn();
+    public function getRoleIdByUserId($userId){
+        $stmt = self::$conexion->prepare("SELECT id_rol FROM usuario WHERE id_usuario = ?");
+        if($stmt === false){
+            throw new Exception("Error preparando la consulta: " . self::$conexion->error);
+        }
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc()['id_rol'];
     }
 }
 
+UserRole::init();
