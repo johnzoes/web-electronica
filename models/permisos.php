@@ -25,4 +25,4 @@ class Permission {
         return false;
     }
 }
-?>
+
