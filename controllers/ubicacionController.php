@@ -1,5 +1,7 @@
 <?php
 require_once 'models/ubicacion.php';
+require_once 'models/salon.php';
+require_once 'models/item.php';
 
 class UbicacionController {
 
@@ -39,8 +41,13 @@ class UbicacionController {
 
     public function edit($id) {
         $ubicacion = Ubicacion::find($id);
-        $view = 'views/ubicacion/edit.php';
-        require_once 'views/layout.php';
+        if ($ubicacion) {
+            $salones = Salon::all();
+            $view = 'views/ubicacion/edit.php';
+            require_once 'views/layout.php';
+        } else {
+            echo "Ubicación no encontrada.";
+        }
     }
 
     public function update($id) {
@@ -56,9 +63,14 @@ class UbicacionController {
     }
 
     public function delete($id) {
-        Ubicacion::delete($id);
-        header('Location: index.php?controller=ubicacion&action=index');
-        exit;
+        $items = Item::findByUbicacion($id);
+        if (!empty($items)) {
+            // Manejar el caso donde hay items dependientes
+            echo "No se puede eliminar la ubicación porque tiene items asociados.";
+        } else {
+            Ubicacion::delete($id);
+            header('Location: index.php?controller=ubicacion&action=index');
+            exit;
+        }
     }
 }
-?>
