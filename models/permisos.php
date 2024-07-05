@@ -5,13 +5,13 @@ class Permission {
     public function __construct($db) {
         $this->db = $db;
     }
-
-    public function hasPermission($roleId, $permission) {
-        // Implementar la lógica para verificar los permisos aquí
-        // Este es solo un ejemplo básico
-        $query = "SELECT * FROM role_permission WHERE id_rol = ? AND id_permiso = ?";
+    public function hasPermission($roleId, $permissionName) {
+        $query = "SELECT 1 
+                  FROM role_permission rp
+                  INNER JOIN permisos p ON rp.id_permiso = p.id_permiso
+                  WHERE rp.id_rol = ? AND p.nombre = ?";
         if ($stmt = $this->db->prepare($query)) {
-            $stmt->bind_param("ii", $roleId, $permission);
+            $stmt->bind_param("is", $roleId, $permissionName);
             $stmt->execute();
             $stmt->store_result();
             if ($stmt->num_rows > 0) {
@@ -24,5 +24,6 @@ class Permission {
         }
         return false;
     }
+    
 }
 

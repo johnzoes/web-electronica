@@ -60,7 +60,8 @@ class AuthController {
                 header('Location: index.php?controller=asistente&action=index');
                 break;
             case 3: // Profesor
-                require 'views/view_profesor/index.php';
+              //llamar de archivo  require 'views/view_profesor/index.php';
+                header('Location: index.php?controller=asistente&action=index');
                 break;
             default:
                 $this->showLoginError("Unauthorized role");

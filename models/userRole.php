@@ -13,16 +13,14 @@ class UserRole {
             $stmt->bind_param("i", $userId);
             $stmt->execute();
             $stmt->bind_result($roleId);
-            
-            if ($stmt->fetch()) {
-                $stmt->close();
-                return $roleId;
-            } else {
-                $stmt->close();
-                return null;
-            }
+            $stmt->fetch();
+            $stmt->close();
+            return $roleId;
+        } else {
+            // Manejo de errores de la preparación de la consulta
+            error_log("Error en la preparación de la consulta: " . $this->db->error);
+            return null;
         }
-        return null;
     }
 }
 

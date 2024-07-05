@@ -18,6 +18,7 @@ require_once 'middleware/AuthorizationMiddleware.php';
 require_once 'models/usuario.php';
 require_once 'models/permisos.php';
 require_once 'models/userRole.php';
+require_once 'models/database.php'; 
 
 $controllerName = isset($_GET['controller']) ? htmlspecialchars($_GET['controller']) : 'categoria';
 $actionName = isset($_GET['action']) ? htmlspecialchars($_GET['action']) : 'index';
@@ -44,33 +45,53 @@ if (!isset($_SESSION['user_id']) && $controllerName !== 'auth') {
     exit;
 }
 
-if (array_key_exists($controllerName, $controllers)) {
-    $controllerClass = $controllers[$controllerName];
+// Mostrar el ID de usuario en sesión si está autenticado
+if (isset($_SESSION['user_id'])) {
+    echo "el rol de usuario es : " . $_SESSION['role'] . "<br>";
+}
+
+try {
+    // Conectar a la base de datos
+    $db = connectDatabase();
+    echo "Conexión exitosa<br>";
+
+    // Crear instancias de las clases necesarias
+    $userRole = new UserRole($db);
+    $permission = new Permission($db);
+
+    // Crear una instancia de AuthorizationMiddleware
+    $authorizationMiddleware = new AuthorizationMiddleware($userRole, $permission);
 
     // Instanciar el controlador con dependencias
-    if ($controllerClass === 'ItemController') {
-        $controller = new $controllerClass($authorizationMiddleware);
-    } else {
-        $controller = new $controllerClass();
-    }
+    if (array_key_exists($controllerName, $controllers)) {
+        $controllerClass = $controllers[$controllerName];
 
-    if (method_exists($controller, $actionName)) {
-        if (in_array($actionName, ['edit', 'update', 'delete'])) {
-            if (isset($_GET['id'])) {
-                $id = $_GET['id'];
-                $controller->$actionName($id);
+        if ($controllerClass === 'ItemController') {
+            $controller = new $controllerClass($authorizationMiddleware);
+        } else {
+            $controller = new $controllerClass();
+        }
+
+        if (method_exists($controller, $actionName)) {
+            if (in_array($actionName, ['edit', 'update', 'delete'])) {
+                if (isset($_GET['id'])) {
+                    $id = $_GET['id'];
+                    $controller->$actionName($id);
+                } else {
+                    // Handle missing ID error
+                    echo "Error: ID is required for this action.";
+                }
             } else {
-                // Handle missing ID error
-                echo "Error: ID is required for this action.";
+                $controller->$actionName();
             }
         } else {
-            $controller->$actionName();
+            // Handle invalid action
+            echo "Error: Action '$actionName' not found in controller '$controllerClass'.";
         }
     } else {
-        // Handle invalid action
-        echo "Error: Action '$actionName' not found in controller '$controllerClass'.";
+        // Handle invalid controller
+        echo "Error: Controller '$controllerName' not found.";
     }
-} else {
-    // Handle invalid controller
-    echo "Error: Controller '$controllerName' not found.";
+} catch (Exception $e) {
+    die("Error: " . $e->getMessage());
 }

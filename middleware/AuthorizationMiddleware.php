@@ -1,4 +1,8 @@
 <?php
+require_once 'models/userRole.php';
+require_once 'models/permisos.php';
+
+
 class AuthorizationMiddleware {
     private $userRole;
     private $permission;
@@ -10,7 +14,9 @@ class AuthorizationMiddleware {
 
     public function checkPermission($userId, $permission) {
         $roleId = $this->userRole->getRoleIdByUserId($userId);
+        echo "a " . $roleId;
         return $this->permission->hasPermission($roleId, $permission);
     }
+    
 }
 

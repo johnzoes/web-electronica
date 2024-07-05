@@ -36,6 +36,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="index.php?controller=usuario&action=index">Usuarios</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.php?controller=auth&action=logout">Cerrar sesión</a> <!-- Enlace para cerrar sesión -->
+                        </li>
                     </ul>
                 </div>
             </div>
