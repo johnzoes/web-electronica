@@ -1,9 +1,11 @@
 <?php
-class UserRole {
-    private $db;
+require_once 'database.php';
 
-    public function __construct($db) {
-        $this->db = $db;
+class UserRole {
+    private static $conexion;
+
+    public static function init() {
+        self::$conexion = $GLOBALS['conexion'];
     }
 
     public function getRoleIdByUserId($userId) {
@@ -22,3 +24,4 @@ class UserRole {
     }
 }
 
+UserRole::init();

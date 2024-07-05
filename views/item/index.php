@@ -2,9 +2,19 @@
 require_once 'config/database.php';
 
 session_start();
+
+if (!isset($_SESSION['user_id'])) {
+    header('Location: index.php?controller=auth&action=login');
+    exit;
+}
+
 $userId = $_SESSION['user_id'];
 $db= connectDatabase();
 $authorizationMiddleware = new AuthorizationMiddleware(new UserRole($db), new Permission($db));
+
+require_once 'models/database.php';
+$conexion = connectDatabase();
+$authorizationMiddleware = new AuthorizationMiddleware(new UserRole($conexion), new Permission($conexion));
 ?>
 
 

@@ -7,15 +7,17 @@ require_once 'models/rol.php';
 require_once 'models/turno.php';
 require_once 'models/salon.php';
 
-class UsuarioController {
+class UsuarioController
+{
 
-    public function index() {
+    public function index()
+    {
         $usuarios = Usuario::all();
 
-        $datos_usuarios=[];
+        $datos_usuarios = [];
 
-        foreach ($usuarios as $usuario){
-            if($usuario){
+        foreach ($usuarios as $usuario) {
+            if ($usuario) {
 
                 $rol = Rol::find($usuario['id_rol']);
 
@@ -26,8 +28,7 @@ class UsuarioController {
                     'apellidos' => $usuario['apellidos'],
                     'rol' => $rol['nombre'],
                 ];
-            }
-            else{
+            } else {
 
             }
 
@@ -38,18 +39,21 @@ class UsuarioController {
         require_once 'views/layout.php';
     }
 
-    public function show($id) {
+    public function show($id)
+    {
         $usuario = Usuario::find($id);
         $view = 'views/usuario/show.php';
         require_once 'views/layout.php';
     }
 
-    public function create() {
+    public function create()
+    {
         $view = 'views/usuario/create.php';
         require_once 'views/layout.php';
     }
 
-    public function create_two() {
+    public function create_two()
+    {
         session_start();
         if (!isset($_SESSION['id_rol'])) {
             // Si no hay rol en la sesión, redirigir a la página de creación inicial
@@ -63,7 +67,8 @@ class UsuarioController {
         require_once 'views/layout.php';
     }
 
-    public function store() {
+    public function store()
+    {
         session_start();
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -76,16 +81,17 @@ class UsuarioController {
         }
     }
 
-    public function store_two() {
+    public function store_two()
+    {
         session_start();
-    
+
         // Verificar si hay un rol en la sesión
         if (!isset($_SESSION['id_rol'])) {
             // Si no hay rol en la sesión, redirigir a la página de creación inicial
             header('Location: index.php?controller=usuario&action=create');
             exit();
         }
-    
+
         // Verificar si se está enviando un formulario POST
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Procesar datos del formulario de create-two.php
@@ -95,7 +101,7 @@ class UsuarioController {
             $password = $_POST['password'];
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
             $id_rol = $_SESSION['id_rol'];
-            
+
             // Preparar los datos comunes para la creación de usuario
             $data = [
                 'nombre_usuario' => $nombre_usuario,
@@ -104,37 +110,37 @@ class UsuarioController {
                 'password' => $hashed_password,
                 'id_rol' => $id_rol
             ];
-    
+
             // Crear el usuario y obtener el id generado
             $lastInsertId = Usuario::create($data);
-    
+
             // Determinar qué tipo de usuario se está creando
             if ($_SESSION['id_rol'] == '2') {
-                
+
                 $turno = $_POST['turno'];
                 $salon = $_POST['salon'];
-    
+
                 $asistente_data = [
                     'id_usuario' => $lastInsertId,
                     'id_turno' => $turno,
                     'id_salon' => $salon
                 ];
-    
+
                 Asistente::create($asistente_data);
             } else {
-                
+
                 // Si el rol no es '2', se asume que es un Profesor
                 $profesor_data = [
                     'id_usuario' => $lastInsertId
                 ];
-    
+
                 Profesor::create($profesor_data);
             }
-    
+
             // Limpiar los datos de la sesión después de la creación
             session_unset();
             session_destroy();
-    
+
             // Redirigir al usuario a la página de lista de usuarios
             header('Location: index.php?controller=usuario&action=index');
             exit;
@@ -142,13 +148,15 @@ class UsuarioController {
     }
 
 
-    public function edit($id) {
+    public function edit($id)
+    {
         $usuario = Usuario::find($id);
         $view = 'views/usuario/edit.php';
         require_once 'views/layout.php';
     }
 
-    public function update($id) {
+    public function update($id)
+    {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $data = [
                 'nombre_usuario' => $_POST['nombre_usuario'],
@@ -161,7 +169,8 @@ class UsuarioController {
         }
     }
 
-    public function delete($id) {
+    public function delete($id)
+    {
         Usuario::delete($id);
         header('Location: index.php?controller=usuario&action=index');
         exit;

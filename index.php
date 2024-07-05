@@ -1,8 +1,6 @@
 <?php
-require_once 'config/database.php';
-require_once 'models/Permission.php';
-require_once 'models/UserRole.php';
-require_once 'middleware/AuthorizationMiddleware.php';
+session_start();
+
 require_once 'controllers/categoriaController.php';
 require_once 'controllers/profesorController.php';
 require_once 'controllers/detalleReservaItemController.php';
@@ -16,12 +14,10 @@ require_once 'controllers/unidadDidacticaController.php';
 require_once 'controllers/usuarioController.php';
 require_once 'controllers/authController.php';
 require_once 'controllers/asistenteController.php';
-
-session_start();
-$db = connectDatabase();
-$permissionModel = new Permisos($db);
-$userRoleModel = new UserRole($db);
-$authorizationMiddleware = new AuthorizationMiddleware($userRoleModel, $permissionModel);
+require_once 'middleware/AuthorizationMiddleware.php';
+require_once 'models/usuario.php';
+require_once 'models/permisos.php';
+require_once 'models/userRole.php';
 
 $controllerName = isset($_GET['controller']) ? htmlspecialchars($_GET['controller']) : 'categoria';
 $actionName = isset($_GET['action']) ? htmlspecialchars($_GET['action']) : 'index';
@@ -42,38 +38,33 @@ $controllers = [
     'auth' => 'AuthController'
 ];
 
-$permissions = [
-    'create' => 'create_item',
-    'edit' => 'edit_item',
-    'update' => 'edit_item',
-    'delete' => 'delete_item',
-    'index' => 'view_item',
-    'show' => 'view_item'
-];
+// Verificar si el usuario está autenticado
+if (!isset($_SESSION['user_id']) && $controllerName !== 'auth') {
+    header('Location: index.php?controller=auth&action=login');
+    exit;
+}
 
 if (array_key_exists($controllerName, $controllers)) {
     $controllerClass = $controllers[$controllerName];
-    $controller = new $controllerClass($authorizationMiddleware); // Pass the middleware to the controller
+
+    // Instanciar el controlador con dependencias
+    if ($controllerClass === 'ItemController') {
+        $controller = new $controllerClass($authorizationMiddleware);
+    } else {
+        $controller = new $controllerClass();
+    }
 
     if (method_exists($controller, $actionName)) {
-        $userId = $_SESSION['user_id'];
-        $requiredPermission = $permissions[$actionName] ?? 'view_item';
-
-        if ($authorizationMiddleware->checkPermission($userId, $requiredPermission)) {
-            if (in_array($actionName, ['edit', 'update', 'delete'])) {
-                if (isset($_GET['id'])) {
-                    $id = $_GET['id'];
-                    $controller->$actionName($id);
-                } else {
-                    // Handle missing ID error
-                    echo "Error: ID is required for this action.";
-                }
+        if (in_array($actionName, ['edit', 'update', 'delete'])) {
+            if (isset($_GET['id'])) {
+                $id = $_GET['id'];
+                $controller->$actionName($id);
             } else {
-                $controller->$actionName();
+                // Handle missing ID error
+                echo "Error: ID is required for this action.";
             }
         } else {
-            // Handle unauthorized access
-            echo "Error: You do not have permission to perform this action.";
+            $controller->$actionName();
         }
     } else {
         // Handle invalid action
@@ -83,4 +74,3 @@ if (array_key_exists($controllerName, $controllers)) {
     // Handle invalid controller
     echo "Error: Controller '$controllerName' not found.";
 }
-?>

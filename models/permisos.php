@@ -1,17 +1,23 @@
 <?php
-class Permisos {
-    private $db;
+require_once 'database.php';
 
-    public function __construct($db) {
-        $this->db = $db;
+class Permission {
+    private static $conexion;
+
+    public static function init() {
+        self::$conexion = $GLOBALS['conexion'];
     }
 
     public function hasPermission($roleId, $permission) {
-        $stmt = $this->db->prepare("SELECT COUNT(*) FROM role_permission rp
-                                    JOIN permisos p ON rp.id_permiso = p.id_permiso
-                                    WHERE rp.id_rol = ? AND p.nombre = ?");
-        $stmt->execute([$roleId, $permission]);
-        return $stmt->fetchColumn() > 0;
+        $stmt = self::$conexion->prepare("SELECT COUNT(*) as cnt FROM role_permission WHERE id_rol = ? AND id_permiso = (SELECT id_permiso FROM permisos WHERE nombre = ?)");
+        if ($stmt === false) {
+            throw new Exception("Error preparando la consulta: " . self::$conexion->error);
+        }
+        $stmt->bind_param("is", $roleId, $permission);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc()['cnt'] > 0;
     }
 }
 
+Permission::init();
