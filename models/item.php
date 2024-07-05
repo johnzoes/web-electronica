@@ -113,6 +113,14 @@ class Item {
         
         return $items;
     }
+
+    public static function findByUbicacion($id_ubicacion) {
+        $stmt = self::$conexion->prepare("SELECT * FROM item WHERE id_ubicacion = ?");
+        $stmt->bind_param("i", $id_ubicacion);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
 }
 
 Item::init();
