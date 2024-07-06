@@ -45,15 +45,9 @@ if (!isset($_SESSION['user_id']) && $controllerName !== 'auth') {
     exit;
 }
 
-// Mostrar el ID de usuario en sesión si está autenticado
-if (isset($_SESSION['user_id'])) {
-    echo "el rol de usuario es : " . $_SESSION['role'] . "<br>";
-}
-
 try {
     // Conectar a la base de datos
     $db = connectDatabase();
-    echo "Conexión exitosa<br>";
 
     // Crear instancias de las clases necesarias
     $userRole = new UserRole($db);

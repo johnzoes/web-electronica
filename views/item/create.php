@@ -1,8 +1,8 @@
 <?php
 // Incluir los modelos necesarios y obtener los datos necesarios
-require_once 'models/salon.php'; 
-require_once 'models/ubicacion.php'; 
-$salones = Salon::all(); 
+require_once 'models/salon.php';
+require_once 'models/ubicacion.php';
+$salones = Salon::all();
 $ubicaciones = Ubicacion::all();
 ?>
 
@@ -33,13 +33,10 @@ $ubicaciones = Ubicacion::all();
             <label for="modelo">Modelo:</label>
             <input type="text" class="form-control" id="modelo" name="modelo" required>
         </div>
-        <div class="form-group">
-            <label for="imagen">Imagen:</label>
+        <div class="mb-3">
+            <label for="imagen" class="form-label">Imagen</label>
             <input type="file" class="form-control" id="imagen" name="imagen">
         </div>
-
-
-
         <div class="form-group">
             <label for="id_salon">Salón:</label>
             <select class="form-control" id="id_salon" name="id_salon" required onchange="cargarArmarios()">
@@ -51,26 +48,20 @@ $ubicaciones = Ubicacion::all();
                 <?php endforeach; ?>
             </select>
         </div>
-
         <div class="form-group" id="div_armario" style="display: none;">
             <label for="id_armario">Armario:</label>
             <select class="form-control" id="id_armario" name="id_armario" required>
                 <option value="" selected disabled>Selecciona un salón primero</option>
             </select>
         </div>
-
-
-
         <div class="form-group">
             <label for="nro_inventariado">Nro. Inventariado:</label>
             <input type="text" class="form-control" id="nro_inventariado" name="nro_inventariado" required>
         </div>
-
         <div class="form-group">
             <label for="id_categoria">Categoría:</label>
             <input type="text" class="form-control" id="id_categoria" name="id_categoria" value="<?php echo htmlspecialchars($id_categoria); ?>" readonly>
         </div>
-        
         <button type="submit" class="btn btn-primary">Crear Item</button>
     </form>
 </div>
@@ -81,7 +72,7 @@ function cargarArmarios() {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', 'index.php?controller=item&action=obtener_armario&id_salon=' + encodeURIComponent(idSalon), true);
 
-    xhr.onload = function() {
+    xhr.onload = function () {
         console.log("Response Text:", xhr.responseText); // Añadir esto para ver la respuesta
 
         if (xhr.status >= 200 && xhr.status < 400) {
@@ -98,7 +89,7 @@ function cargarArmarios() {
                 selectArmarios.appendChild(option);
 
                 // Agregar las opciones de armarios obtenidas
-                armarios.forEach(function(ubicacion) {
+                armarios.forEach(function (ubicacion) {
                     var option = document.createElement('option');
                     option.value = ubicacion.id_ubicacion;
                     option.textContent = ubicacion.nombre_armario;
@@ -115,7 +106,7 @@ function cargarArmarios() {
         }
     };
 
-    xhr.onerror = function() {
+    xhr.onerror = function () {
         console.error('Error de red al cargar los armarios.');
     };
 
