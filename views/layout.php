@@ -1,3 +1,21 @@
+<?php
+require_once 'models/PermissionManager.php';
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (!isset($_SESSION['user_id'])) {
+    header('Location: index.php?controller=auth&action=login');
+    exit;
+}
+
+$userId = $_SESSION['user_id'];
+$db = connectDatabase();
+$permissionManager = new PermissionManager($db);
+$canCreateItem = $permissionManager->canCreateItem($userId);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,41 +27,44 @@
     <title>Inventariado</title>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-            <div class="container">
-                <a class="navbar-brand" href="#">SISTEMA</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" href="index.php?controller=ubicacion&action=index">Ubicación</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="index.php?controller=salon&action=index">Salones</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="index.php?controller=reserva&action=index">Reserva</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="index.php?controller=categoria&action=index">Categoría</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="index.php?controller=unidad_didactica&action=index">Unidad Didáctica</a>
-                        </li>
+   
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">SISTEMA</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.php?controller=ubicacion&action=index">Ubicación</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.php?controller=salon&action=index">Salones</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.php?controller=reserva&action=index">Reserva</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.php?controller=categoria&action=index">Categoría</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.php?controller=unidad_didactica&action=index">Unidad Didáctica</a>
+                    </li>
+                    <?php if ($canCreateItem): ?>
                         <li class="nav-item">
                             <a class="nav-link" href="index.php?controller=usuario&action=index">Usuarios</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="index.php?controller=auth&action=logout">Cerrar sesión</a> <!-- Enlace para cerrar sesión -->
-                        </li>
-                    </ul>
-                </div>
+                    <?php endif; ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.php?controller=auth&action=logout">Cerrar sesión</a>
+                    </li>
+                </ul>
             </div>
-        </nav>
-    </header>
+        </div>
+    </nav>
+</header>
     <main class="container my-4">
         <?php include($view); ?>
     </main>
