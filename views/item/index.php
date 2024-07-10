@@ -92,3 +92,55 @@ $canCreateItem = $permissionManager->canCreateItem($userId);
         });
     </script>
 <?php endif; ?>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const deleteForms = document.querySelectorAll('form[action*="delete"]');
+
+        deleteForms.forEach(form => {
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+                const url = form.getAttribute('action');
+
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: "¡No podrás revertir esto!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sí, eliminarlo!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch(url, {
+                            method: 'POST'
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                form.closest('tr').remove();
+                                Swal.fire(
+                                    'Eliminado!',
+                                    'El ítem ha sido eliminado.',
+                                    'success'
+                                );
+                            } else {
+                                Swal.fire(
+                                    'Error!',
+                                    'Hubo un problema al eliminar el ítem.',
+                                    'error'
+                                );
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire(
+                                'Error!',
+                                'Hubo un problema al eliminar el ítem.',
+                                'error'
+                            );
+                        });
+                    }
+                });
+            });
+        });
+    });
+</script>
