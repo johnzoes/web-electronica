@@ -1,5 +1,6 @@
 <?php
 require_once 'models/PermissionManager.php';
+require_once 'middleware/AuthorizationMiddleware.php';
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -10,10 +11,14 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
+
+$role_id = $_SESSION['role'];
+
 $userId = $_SESSION['user_id'];
 $db = connectDatabase();
-$permissionManager = new PermissionManager($db);
-$canCreateItem = $permissionManager->canCreateItem($userId);
+$authorizationMiddleware = new AuthorizationMiddleware($role_id, 'create_user');
+$canCreateUser = $authorizationMiddleware->checkPermission( $userId, 'create_user' );
+
 ?>
 
 <!DOCTYPE html>
