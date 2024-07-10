@@ -56,8 +56,8 @@ class ItemController
     {
         // Verificar permiso antes de almacenar el nuevo item
         $userId = $_SESSION['user_id'];
-        if (!$this->authorizationMiddleware->checkPermission($userId, 'create_item')) {
-            throw new Exception("No tienes permiso para crear un nuevo item.");
+            if (!$this->authorizationMiddleware->checkPermission($userId, 'create_item')) {
+                throw new Exception("No tienes permiso para crear un nuevo item.");
         }
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
