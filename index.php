@@ -86,11 +86,11 @@ try {
             }
         } else {
             // Handle invalid action
-            echo "Error: Action '$actionName' not found in controller '$controllerClass'.";
+                echo "Error: Action '$actionName' not found in controller '$controllerClass'.";
         }
     } else {
         // Handle invalid controller
-        echo "Error: Controller '$controllerName' not found.";
+                echo "Error: Controller '$controllerName' not found.";
     }
 } catch (Exception $e) {
     die("Error: " . $e->getMessage());
