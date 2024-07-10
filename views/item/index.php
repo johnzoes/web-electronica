@@ -20,9 +20,8 @@ $canCreateItem = ($roleId == 1 || $roleId == 2);
 
 <div class="container">
     <h2>Lista de Items</h2>
-    <?php if ($canCreateItem): ?>
-        <a href="index.php?controller=item&action=create&id_categoria=<?php echo $id_categoria; ?>" class="btn btn-success mb-3">Crear Item</a>
-    <?php endif; ?>
+    <a href="index.php?controller=item&action=create&id_categoria=<?php echo $id_categoria; ?>"
+        class="btn btn-success mb-3">Crear Item</a>
     <table class="table">
         <thead>
             <tr>
@@ -51,15 +50,19 @@ $canCreateItem = ($roleId == 1 || $roleId == 2);
                         <td><?php echo htmlspecialchars($item['modelo'], ENT_QUOTES, 'UTF-8'); ?></td>
                         <td>
                             <?php if (!empty($item['imagen'])): ?>
-                                <img src="<?php echo htmlspecialchars($item['imagen'], ENT_QUOTES, 'UTF-8'); ?>" alt="Imagen" width="50">
+                                <img src="images/<?php echo htmlspecialchars($item['imagen'], ENT_QUOTES, 'UTF-8'); ?>" alt="Imagen"
+                                    width="50">
                             <?php endif; ?>
                         </td>
                         <td><?php echo htmlspecialchars($item['id_ubicacion'], ENT_QUOTES, 'UTF-8'); ?></td>
                         <td><?php echo htmlspecialchars($item['nro_inventariado'], ENT_QUOTES, 'UTF-8'); ?></td>
                         <td><?php echo htmlspecialchars($item['id_categoria'], ENT_QUOTES, 'UTF-8'); ?></td>
                         <td>
-                            <a href="index.php?controller=item&action=edit&id=<?php echo htmlspecialchars($item['id_item'], ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-primary">Editar</a>
-                            <form action="index.php?controller=item&action=delete&id=<?php echo htmlspecialchars($item['id_item'], ENT_QUOTES, 'UTF-8'); ?>" method="POST" style="display: inline-block;">
+                            <a href="index.php?controller=item&action=edit&id=<?php echo htmlspecialchars($item['id_item'], ENT_QUOTES, 'UTF-8'); ?>"
+                                class="btn btn-primary">Editar</a>
+                            <form
+                                action="index.php?controller=item&action=delete&id=<?php echo htmlspecialchars($item['id_item'], ENT_QUOTES, 'UTF-8'); ?>"
+                                method="POST" style="display: inline-block;">
                                 <button type="submit" class="btn btn-danger">Eliminar</button>
                             </form>
                         </td>
@@ -76,7 +79,7 @@ $canCreateItem = ($roleId == 1 || $roleId == 2);
 
 <?php if (isset($_GET['message'])): ?>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',

@@ -22,7 +22,6 @@ function connectDatabase() {
 
 try {
     $conexion = connectDatabase();
-    echo "Conexión exitosa";
 } catch (Exception $e) {
     die($e->getMessage());
 }

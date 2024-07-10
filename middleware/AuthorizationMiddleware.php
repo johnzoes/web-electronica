@@ -14,7 +14,6 @@ class AuthorizationMiddleware {
 
     public function checkPermission($userId, $permission) {
         $roleId = $this->userRole->getRoleIdByUserId($userId);
-        echo "a " . $roleId;
         return $this->permission->hasPermission($roleId, $permission);
     }
     
