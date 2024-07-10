@@ -2,8 +2,12 @@
 require_once 'models/database.php';
 require_once 'models/userRole.php';
 require_once 'models/permisos.php';
+require_once 'models/PermissionManager.php'; // Incluimos el nuevo archivo
 require_once 'middleware/AuthorizationMiddleware.php';
 
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: index.php?controller=auth&action=login');
@@ -12,16 +16,14 @@ if (!isset($_SESSION['user_id'])) {
 
 $userId = $_SESSION['user_id'];
 $db = connectDatabase();
-$userRole = new UserRole($db);
-$roleId = $userRole->getRoleIdByUserId($userId);
-$authorizationMiddleware = new AuthorizationMiddleware(new UserRole($db), new Permission($db));
-$canCreateItem = ($roleId == 1 || $roleId == 2);
+$permissionManager = new PermissionManager($db); // Usamos la nueva clase
+$canCreateItem = $permissionManager->canCreateItem($userId);
 ?>
 
 <div class="container">
     <h2>Lista de Items</h2>
     <?php if ($canCreateItem): ?>
-        <a href="index.php?controller=item&action=create&id_categoria=<?php echo $id_categoria; ?>"
+        <a href="index.php?controller=item&action=create&id_categoria=<?php echo htmlspecialchars($id_categoria, ENT_QUOTES, 'UTF-8'); ?>"
             class="btn btn-success mb-3">Crear Item</a>
     <?php endif; ?>
     <table class="table">
