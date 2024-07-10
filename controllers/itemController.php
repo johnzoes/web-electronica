@@ -177,11 +177,18 @@ class ItemController
         // Verificar permiso antes de eliminar el item
         $userId = $_SESSION['user_id'];
         if (!$this->authorizationMiddleware->checkPermission($userId, 'delete_item')) {
-            throw new Exception("No tienes permiso para eliminar este item.");
+            http_response_code(403);
+            echo json_encode(["message" => "No tienes permiso para eliminar este item."]);
+            exit;
         }
 
-        Item::delete($id);
-        header('Location: index.php?controller=item&action=index');
+        if (Item::delete($id)) {
+            http_response_code(200);
+            echo json_encode(["message" => "Item eliminado exitosamente."]);
+        } else {
+            http_response_code(500);
+            echo json_encode(["message" => "Hubo un problema al eliminar el item."]);
+        }
         exit;
     }
 
