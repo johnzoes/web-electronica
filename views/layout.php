@@ -58,7 +58,7 @@ $canCreateUser = $authorizationMiddleware->checkPermission($userId, 'create_user
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?controller=unidad_didactica&action=index">Unidad Didáctica</a>
                     </li>
-                    <?php if ($canCreateUser):    ?>
+                    <?php if ($canCreateUser):  ?>
                         <li class="nav-item">
                             <a class="nav-link" href="index.php?controller=usuario&action=index">Usuarios</a>
                         </li>
