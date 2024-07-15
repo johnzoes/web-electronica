@@ -14,14 +14,17 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $userId = $_SESSION['user_id'];
+$role = $_SESSION['role'];
 $db = connectDatabase();
 
 ?>
 
 <div class="container">
     <h2>Lista de Items</h2>
+    <?php if ($role !== 3): // El rol 3 es para Profesor ?>
         <a href="index.php?controller=item&action=create&id_categoria=<?php echo htmlspecialchars($id_categoria, ENT_QUOTES, 'UTF-8'); ?>"
             class="btn btn-success mb-3">Crear Item</a>
+    <?php endif; ?>
     <table class="table">
         <thead>
             <tr>
@@ -35,7 +38,9 @@ $db = connectDatabase();
                 <th>Ubicación</th>
                 <th>Nro. Inventariado</th>
                 <th>Categoría</th>
-                <th>Acciones</th>
+                <?php if ($role !== 3): // El rol 3 es para Profesor ?>
+                    <th>Acciones</th>
+                <?php endif; ?>
             </tr>
         </thead>
         <tbody>
@@ -57,20 +62,22 @@ $db = connectDatabase();
                         <td><?php echo htmlspecialchars($item['id_ubicacion'], ENT_QUOTES, 'UTF-8'); ?></td>
                         <td><?php echo htmlspecialchars($item['nro_inventariado'], ENT_QUOTES, 'UTF-8'); ?></td>
                         <td><?php echo htmlspecialchars($item['id_categoria'], ENT_QUOTES, 'UTF-8'); ?></td>
-                        <td>
-                            <a href="index.php?controller=item&action=edit&id=<?php echo htmlspecialchars($item['id_item'], ENT_QUOTES, 'UTF-8'); ?>"
-                                class="btn btn-primary">Editar</a>
-                            <form
-                                action="index.php?controller=item&action=delete&id=<?php echo htmlspecialchars($item['id_item'], ENT_QUOTES, 'UTF-8'); ?>"
-                                method="POST" style="display: inline-block;">
-                                <button type="submit" class="btn btn-danger">Eliminar</button>
-                            </form>
-                        </td>
+                        <?php if ($role !== 3): // El rol 3 es para Profesor ?>
+                            <td>
+                                <a href="index.php?controller=item&action=edit&id=<?php echo htmlspecialchars($item['id_item'], ENT_QUOTES, 'UTF-8'); ?>"
+                                    class="btn btn-primary">Editar</a>
+                                <form
+                                    action="index.php?controller=item&action=delete&id=<?php echo htmlspecialchars($item['id_item'], ENT_QUOTES, 'UTF-8'); ?>"
+                                    method="POST" style="display: inline-block;">
+                                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                                </form>
+                            </td>
+                        <?php endif; ?>
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="11">No hay items disponibles</td>
+                    <td colspan="<?php echo $role !== 3 ? '11' : '10'; ?>">No hay items disponibles</td>
                 </tr>
             <?php endif; ?>
         </tbody>

@@ -10,6 +10,14 @@ require_once 'models/salon.php';
 class UsuarioController
 {
 
+    public function __construct()
+    {
+        if ($_SESSION['role'] != 1) { // Verificar si el usuario no es un administrador
+            header('Location: index.php');
+            exit;
+        }
+    }
+
     public function index()
     {
         $usuarios = Usuario::all();
@@ -28,12 +36,8 @@ class UsuarioController
                     'apellidos' => $usuario['apellidos'],
                     'rol' => $rol['nombre'],
                 ];
-            } else {
-
             }
-
         }
-
 
         $view = 'views/usuario/index.php';
         require_once 'views/layout.php';
@@ -176,4 +180,3 @@ class UsuarioController
         exit;
     }
 }
-?>

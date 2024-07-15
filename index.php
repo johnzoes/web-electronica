@@ -18,7 +18,7 @@ require_once 'middleware/AuthorizationMiddleware.php';
 require_once 'models/usuario.php';
 require_once 'models/permisos.php';
 require_once 'models/userRole.php';
-require_once 'models/database.php'; 
+require_once 'models/database.php';
 
 $controllerName = isset($_GET['controller']) ? htmlspecialchars($_GET['controller']) : 'categoria';
 $actionName = isset($_GET['action']) ? htmlspecialchars($_GET['action']) : 'index';
@@ -42,6 +42,12 @@ $controllers = [
 // Verificar si el usuario está autenticado
 if (!isset($_SESSION['user_id']) && $controllerName !== 'auth') {
     header('Location: index.php?controller=auth&action=login');
+    exit;
+}
+
+// Verificar si el usuario tiene permiso para acceder al controlador de usuarios
+if ($controllerName == 'usuario' && $_SESSION['role'] != 1) {
+    header('Location: index.php');
     exit;
 }
 
@@ -80,11 +86,11 @@ try {
             }
         } else {
             // Handle invalid action
-                echo "Error: Action '$actionName' not found in controller '$controllerClass'.";
+            echo "Error: Action '$actionName' not found in controller '$controllerClass'.";
         }
     } else {
         // Handle invalid controller
-                echo "Error: Controller '$controllerName' not found.";
+        echo "Error: Controller '$controllerName' not found.";
     }
 } catch (Exception $e) {
     die("Error: " . $e->getMessage());
