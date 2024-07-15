@@ -54,7 +54,7 @@ class AuthController {
         // Redirigir al usuario según su rol
         switch ($roleId) {
             case 1: // Administrador
-                header('Location: index.php?controller=item&action=index');
+                header('Location: index.php?');
                 break;
             case 2: // Asistente
                 header('Location: index.php?controller=asistente&action=index');
