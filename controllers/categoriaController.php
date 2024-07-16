@@ -4,6 +4,7 @@ require_once 'models/categoria.php';
 class CategoriaController {
 
     public function index() {
+        $rol = isset($_SESSION['role']) ? $_SESSION['role'] : null;
         $categorias = Categoria::all();
         $view = 'views/categoria/index.php';
         require_once 'views/layout.php';
@@ -54,4 +55,3 @@ class CategoriaController {
         exit;
     }
 }
-?>

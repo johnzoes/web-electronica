@@ -1,147 +1,97 @@
 <?php
-require_once 'controllers/CategoriaController.php';
-require_once 'controllers/ProfesorController.php';
-require_once 'controllers/DetalleReservaItemController.php';
-require_once 'controllers/ItemController.php';
-require_once 'controllers/PrestamoController.php';
-require_once 'controllers/ReservaController.php';
-require_once 'controllers/RolController.php';
-require_once 'controllers/SalonController.php';
-require_once 'controllers/UbicacionController.php';
-require_once 'controllers/UnidadDidacticaController.php';
-require_once 'controllers/UsuarioController.php';
-require_once 'controllers/AuthController.php';
-require_once 'controllers/AsistenteController.php';
+session_start();
 
+require_once 'controllers/categoriaController.php';
+require_once 'controllers/profesorController.php';
+require_once 'controllers/detalleReservaItemController.php';
+require_once 'controllers/itemController.php';
+require_once 'controllers/prestamoController.php';
+require_once 'controllers/reservaController.php';
+require_once 'controllers/rolController.php';
+require_once 'controllers/salonController.php';
+require_once 'controllers/ubicacionController.php';
+require_once 'controllers/unidadDidacticaController.php';
+require_once 'controllers/usuarioController.php';
+require_once 'controllers/authController.php';
+require_once 'controllers/asistenteController.php';
+require_once 'middleware/AuthorizationMiddleware.php';
+require_once 'models/usuario.php';
+require_once 'models/permisos.php';
+require_once 'models/userRole.php';
+require_once 'models/database.php';
 
-$controller = isset($_GET['controller']) ? $_GET['controller'] : 'categoria';
-$action = isset($_GET['action']) ? $_GET['action'] : 'index';
+$controllerName = isset($_GET['controller']) ? htmlspecialchars($_GET['controller']) : 'categoria';
+$actionName = isset($_GET['action']) ? htmlspecialchars($_GET['action']) : 'index';
 
-// Crear instancia del controlador según el parámetro 'controller'
-switch ($controller) {
-    case 'item':
-        $controller = new ItemController();
-        break;
-    case 'profesor':
-        $controller = new ProfesorController();
-        break;
-    case 'categoria':
-        $controller = new CategoriaController();
-        break;
-    case 'prestamo':
-        $controller = new PrestamoController(); 
-        break;
-    case 'reserva':
-        $controller = new ReservaController();
-        break;
-    case 'ubicacion':
-        $controller = new UbicacionController();
-        break;
-    case 'salon':
-        $controller = new SalonController();
-        break;
-    case 'unidad_didactica':
-        $controller = new UnidadDidacticaController();
-        break;
-    case 'usuario':
-        $controller = new UsuarioController();           
-        break;
-    case 'rol':
-        $controller = new RolController();
-        break;
-    case 'detalle_reserva_item':
-        $controller = new DetalleReservaItemController();
-        break;
-    case 'asistente':
-        $controller = new asistenteController();
-        break;
+$controllers = [
+    'item' => 'ItemController',
+    'profesor' => 'ProfesorController',
+    'categoria' => 'CategoriaController',
+    'prestamo' => 'PrestamoController',
+    'reserva' => 'ReservaController',
+    'ubicacion' => 'UbicacionController',
+    'salon' => 'SalonController',
+    'unidad_didactica' => 'UnidadDidacticaController',
+    'usuario' => 'UsuarioController',
+    'rol' => 'RolController',
+    'detalle_reserva_item' => 'DetalleReservaItemController',
+    'asistente' => 'AsistenteController',
+    'auth' => 'AuthController'
+];
 
-    case 'auth':
-            $controller = new authController();
-            break;
-
-
-
-
-    default:
-        // Controlador predeterminado en caso de que no se proporcione uno válido en la URL
+// Verificar si el usuario está autenticado
+if (!isset($_SESSION['user_id']) && $controllerName !== 'auth') {
+    header('Location: index.php?controller=auth&action=login');
+    exit;
 }
 
-// Ejecutar la acción correspondiente en el controlador
-switch ($action) {
-    case 'index':
-        $controller->index();
-        break;
-
-    case 'edit':
-        if (isset($_GET['id'])) {
-            $id = $_GET['id'];
-            $controller->edit($id);
-        } else {
-            // Manejar el caso en el que no se proporciona un ID
-            // Aquí puedes redirigir a una página de error o hacer otra acción apropiada
-        }
-        break;
-
-        case 'obtener_armario':
-            if (method_exists($controller, 'obtener_armario')) {
-                $controller->obtener_armario();
-            }
-            break;         
-
-    case 'create':
-        $controller->create();
-        break;
-        case 'create_two':
-            $controller->create_two();
-            break;
-
-    case 'update':
-        if (isset($_GET['id'])) {
-            $id = $_GET['id'];
-            $controller->update($id);
-        } else {
-            // Manejar el caso en el que no se proporciona un ID
-            // Aquí puedes redirigir a una página de error o hacer otra acción apropiada
-        }
-        break;
-
-    case 'store':
-        $controller->store();
-        break;
-        
-        case 'store_two':
-            $controller->store_two();
-            break;
-    case 'authenticate':
-            $controller->authenticate();
-            break;
-
-    case 'delete':
-        if (isset($_GET['id'])) {
-            $id = $_GET['id'];
-            $controller->delete($id);
-
-        } else {
-            // Manejar el caso en el que no se proporciona un ID
-            // Aquí puedes redirigir a una página de error o hacer otra acción apropiada
-        }
-        break;
-
-
-        case 'login':
-
-            $controller->login();
-            break;
-
-        case'obtener_unidad_didactica':
-            if (method_exists($controller, 'obtener_unidad_didactica')) {
-                $controller->obtener_unidad_didactica();
-            }
-            break;   
-    default:
-
-        // Manejar casos de acción no válidos
-        // Aquí puedes redirigir a una página de error o hacer otra acción apropiada
+// Verificar si el usuario tiene permiso para acceder al controlador de usuarios
+if ($controllerName == 'usuario' && $_SESSION['role'] != 1) {
+    header('Location: index.php');
+    exit;
 }
 
+try {
+    // Conectar a la base de datos
+    $db = connectDatabase();
+
+    // Crear instancias de las clases necesarias
+    $userRole = new UserRole($db);
+    $permission = new Permission($db);
+
+    // Crear una instancia de AuthorizationMiddleware
+    $authorizationMiddleware = new AuthorizationMiddleware($userRole, $permission);
+
+    // Instanciar el controlador con dependencias
+    if (array_key_exists($controllerName, $controllers)) {
+        $controllerClass = $controllers[$controllerName];
+
+        if ($controllerClass === 'ItemController') {
+            $controller = new $controllerClass($authorizationMiddleware);
+        } else {
+            $controller = new $controllerClass();
+        }
+
+        if (method_exists($controller, $actionName)) {
+            if (in_array($actionName, ['edit', 'update', 'delete'])) {
+                if (isset($_GET['id'])) {
+                    $id = $_GET['id'];
+                    $controller->$actionName($id);
+                } else {
+                    // Handle missing ID error
+                    echo "Error: ID is required for this action.";
+                }
+            } else {
+                $controller->$actionName();
+            }
+        } else {
+            // Handle invalid action
+            echo "Error: Action '$actionName' not found in controller '$controllerClass'.";
+        }
+    } else {
+        // Handle invalid controller
+        echo "Error: Controller '$controllerName' not found.";
+    }
+} catch (Exception $e) {
+    die("Error: " . $e->getMessage());
+}
