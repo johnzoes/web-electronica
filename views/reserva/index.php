@@ -5,7 +5,7 @@ require_once 'models/estado_reserva.php';
 
 
 <div class="container">
-    <h2>Lista de Reservas</h2>
+    <h2 class="poppins-bold">Lista de Reservas</h2>
     <a href="index.php?controller=reserva&action=create" class="btn btn-success mb-3">Crear Reserva</a>
     <table class="table">
         <thead>

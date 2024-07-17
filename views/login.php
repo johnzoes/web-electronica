@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="views/styles.css">
-    <link rel="stylesheet" href="views/login.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="views/font-poppins.css">
+    <link rel="stylesheet" href="views/login.css">
+
     <title>Iniciar sesión</title>
 </head>
 <body>
     <div class="background"></div>
     <div class="container d-flex justify-content-center align-items-center vh-100">
         <div class="login-box">
-            <h2 class="mb-4">Login</h2>
+            <h2 class="mb-4">Iniciar Sesión</h2>
             <?php if (isset($error)): ?>
                 <div class="alert alert-danger"><?php echo $error; ?></div>
             <?php endif; ?>

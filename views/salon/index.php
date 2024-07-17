@@ -1,5 +1,6 @@
 <div class="container">
-    <a href="index.php?controller=salon&action=create" class="btn btn-primary mb-3">Agregar Salón</a>
+    
+<h2 class="my-4 poppins-bold">Lista de Ubicaciones</h2>
 
     <table class="table table-striped">
         <thead>
@@ -28,4 +29,7 @@
             <?php endif; ?>
         </tbody>
     </table>
+
+    <a href="index.php?controller=salon&action=create" class="btn btn-primary mb-3 ">Agregar Salón</a>
+
 </div>

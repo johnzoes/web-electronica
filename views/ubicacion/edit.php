@@ -1,6 +1,6 @@
 <?php if (isset($ubicacion) && isset($salones)): ?>
     <div class="container">
-        <h2>Editar Ubicación</h2>
+        <h2  class="poppins-bold">Editar Ubicación</h2>
         <form action="index.php?controller=ubicacion&action=update&id=<?php echo htmlspecialchars($ubicacion['id_ubicacion'], ENT_QUOTES, 'UTF-8'); ?>" method="POST">
             <div class="mb-3">
                 <label for="nombre_armario" class="form-label">Nombre del Armario</label>

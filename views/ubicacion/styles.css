@@ -1,0 +1,121 @@
+/* views/styles.css */
+
+.navbar{
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+}
+
+
+body, html {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.container-main{
+    max-width: 90%;
+    margin: 0 auto;
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px 100px;
+    border-radius: 10px;
+ 
+}
+
+.container-nav{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 90%;
+    padding: 20px 100px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    background-color: #fff;
+
+}
+
+.container{
+    padding: 40px 150px;
+}
+
+.table-modern {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px; /* Espacio entre filas */
+}
+
+.table-modern thead th {
+    background-color: #ececec; /* Fondo gris claro */
+    color: #000000; /* Color del texto del encabezado */
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 15px;
+    text-align: left;
+    border-top-left-radius: 0px; /* Bordes redondeados para la primera celda */
+    border-top-right-radius: 0px; /* Bordes redondeados para la última celda */
+    border-bottom: 2px solid #dee2e6; /* Línea inferior para separar del cuerpo */
+}
+
+.table-modern thead tr {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Sombra para separar el encabezado */
+    margin-bottom: 10px; /* Margen inferior para separarlo de las filas */
+}
+
+.table-modern tbody tr {
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.table-modern tbody tr:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.table-modern tbody tr td {
+    border: none;
+    padding: 15px;
+    vertical-align: middle;
+    background: #fff;
+}
+
+.table-modern thead  th:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.table-modern thead td:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.table-modern tbody tr td:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.table-modern tbody tr td:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.table-modern tbody tr td button {
+    margin: 0 5px;
+}
+
+.status {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #fff;
+}
+
+
+
+
+

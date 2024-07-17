@@ -1,4 +1,4 @@
-<h1>Crear Ubicación</h1>
+<h1 class="poppins-bold">Crear Ubicación</h1>
 <form action="index.php?controller=ubicacion&action=store" method="POST" class="d-flex flex-column align-items-start">
     <div class="mb-3 d-flex align-items-center">
         <label for="id_salon" class="form-label me-2">Salón:</label>
