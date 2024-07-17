@@ -3,7 +3,6 @@ require_once 'models/usuario.php';
 require_once 'models/profesor.php';
 require_once 'models/asistente.php';
 require_once 'models/rol.php';
-
 require_once 'models/turno.php';
 require_once 'models/salon.php';
 
