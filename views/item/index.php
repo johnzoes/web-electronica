@@ -20,12 +20,12 @@ $db = connectDatabase();
 ?>
 
 <div class="container">
-    <h2>Lista de Items</h2>
+    <h2 class="my-4 poppins-bold">Lista de Items</h2>
     <?php if ($role !== 3): // El rol 3 es para Profesor ?>
         <a href="index.php?controller=item&action=create&id_categoria=<?php echo htmlspecialchars($id_categoria, ENT_QUOTES, 'UTF-8'); ?>"
             class="btn btn-success mb-3">Crear Item</a>
     <?php endif; ?>
-    <table class="table">
+    <table class="table-modern">
         <thead>
             <tr>
                 <th>Código BCI</th>
@@ -65,11 +65,14 @@ $db = connectDatabase();
                         <?php if ($role !== 3): // El rol 3 es para Profesor ?>
                             <td>
                                 <a href="index.php?controller=item&action=edit&id=<?php echo htmlspecialchars($item['id_item'], ENT_QUOTES, 'UTF-8'); ?>"
-                                    class="btn btn-primary">Editar</a>
-                                <form
-                                    action="index.php?controller=item&action=delete&id=<?php echo htmlspecialchars($item['id_item'], ENT_QUOTES, 'UTF-8'); ?>"
+                                    class="btn btn-primary btn-sm">
+                                    <!-- SVG para Editar -->
+                                </a>
+                                <form action="index.php?controller=item&action=delete&id=<?php echo htmlspecialchars($item['id_item'], ENT_QUOTES, 'UTF-8'); ?>"
                                     method="POST" style="display: inline-block;">
-                                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <!-- SVG para Eliminar -->
+                                    </button>
                                 </form>
                             </td>
                         <?php endif; ?>

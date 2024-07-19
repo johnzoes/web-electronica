@@ -1,11 +1,11 @@
 <div class="container">
-    <h2>Lista de Usuarios</h2>
-    <a href="index.php?controller=usuario&action=create" class="btn btn-success mb-3">Crear Usuario</a>
+    <h2 class="poppins-bold">Lista de Usuarios</h2>
+    <a href="index.php?controller=usuario&action=create" class="btn btn-success mb-3 poppins-regular" >Crear Usuario</a>
     <table class="table">
 <br>
-    <a class="btn btn-primary" href="index.php?controller=asistente&action=index"> Ver Asistentes</a> <br><br>
+    <a class="btn btn-primary poppins-light" href="index.php?controller=asistente&action=index"> Ver Asistentes</a> <br><br>
  
-    <a class="btn btn-primary"  href="index.php?controller=profesor&action=index">Ver Profesores</a>
+    <a class="btn btn-primary oppins-light"  href="index.php?controller=profesor&action=index">Ver Profesores</a>
 
 <!--
     
