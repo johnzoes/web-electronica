@@ -21,10 +21,10 @@ require_once 'models/salon.php';
                     <td><?php echo htmlspecialchars($ubicacion['id_salon'], ENT_QUOTES, 'UTF-8'); ?></td>
                     <td>
                     <a href="index.php?controller=ubicacion&action=edit&id=<?php echo htmlspecialchars($ubicacion['id_ubicacion'], ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-primary btn-sm">
-                            <img src="../../images/aa.svg" alt="Editar" width="16" height="16">
+                            <img src="images/icons8-editar.svg" alt="Editar" width="25" height="25">
                         </a>                  
-                    <button type="submit" class="btn btn-danger btn-sm">
-                                <img src="images/a.svg" alt="Eliminar" width="16" height="16">
+                    <button type="submit" class="btn">
+                                <img src="images/icons8-eliminar.svg" alt="Eliminar" width="25" height="25">
                             </button>
                     </td>
                 </tr>
