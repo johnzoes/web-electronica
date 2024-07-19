@@ -120,3 +120,46 @@ body, html {
   }
   
 
+  
+
+  .card {
+    border: 1px solid #eeeeee;
+    margin: 15px;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, rgb(162, 161, 83), rgb(255, 255, 255)), 
+                url('images/fondo.jpg');    padding: 1.25rem;
+    height: 15rem;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+
+.card-gradient {
+
+    background-size: cover;
+    color: #fff; /* Cambia el color del texto si es necesario */
+    border: none;
+    border-radius: 0.10rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s;
+}
+
+.card-gradient:hover {
+    transform: scale(1.10);
+}
+
+
+.card-title {
+    font-size: 1.5rem;
+    margin-bottom: 0;
+}
+    
