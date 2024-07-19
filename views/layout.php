@@ -28,7 +28,7 @@
 <body>
 
 <header>
-    <nav class="navbar navbar-expand-lg navbar-light ">
+    <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container-nav">
             <a class="navbar-brand poppins-semibold" href="#">SISTEMA</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,20 +36,22 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link poppins-medium" href="index.php?controller=ubicacion&action=index">Ubicación</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link poppins-medium" href="index.php?controller=salon&action=index">Salones</a>
-                    </li>
+                    <?php if ($_SESSION['role'] != 3): ?>
+                        <li class="nav-item">
+                            <a class="nav-link poppins-medium" href="index.php?controller=ubicacion&action=index">Ubicación</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link poppins-medium" href="index.php?controller=salon&action=index">Salones</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link poppins-medium" href="index.php?controller=categoria&action=index">Categoría</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link poppins-medium" href="index.php?controller=unidad_didactica&action=index">Unidad Didáctica</a>
+                        </li>
+                    <?php endif; ?>
                     <li class="nav-item">
                         <a class="nav-link poppins-medium" href="index.php?controller=reserva&action=index">Reserva</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link poppins-medium" href="index.php?controller=categoria&action=index">Categoría</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link poppins-medium" href="index.php?controller=unidad_didactica&action=index">Unidad Didáctica</a>
                     </li>
                     <?php if ($_SESSION['role'] == 1): // Solo mostrar para administradores ?>
                         <li class="nav-item">

@@ -28,7 +28,8 @@ class AuthController {
 
     public function logout() {
         session_start();
-        session_destroy();
+        session_unset(); // Eliminar todas las variables de sesión
+        session_destroy(); // Destruir la sesión
         header('Location: index.php?controller=auth&action=login');
         exit;
     }
@@ -54,21 +55,20 @@ class AuthController {
         // Redirigir al usuario según su rol
         switch ($roleId) {
             case 1: // Administrador
-                header('Location: index.php?');
+                header('Location: index.php');
                 break;
             case 2: // Asistente
                 header('Location: index.php?controller=asistente&action=index');
                 break;
             case 3: // Profesor
-              //llamar de archivo  require 'views/view_profesor/index.php';
-                header('Location: index.php?controller=asistente&action=index');
+                header('Location: index.php?controller=reserva&action=index');
                 break;
             default:
                 $this->showLoginError("Unauthorized role");
                 break;
         }
         exit;
-    }
+    }    
 
     private function showLoginError($error) {
         // Mostrar la página de login con un mensaje de error

@@ -9,10 +9,23 @@ require_once 'models/estado_reserva.php';
 class ReservaController {
 
     public function index() {
-        $reservas = Reserva::all();
-        $view = 'views/reserva/index.php';
+        $rol = isset($_SESSION['role']) ? $_SESSION['role'] : null;
+    
+        if ($rol == 3) { // Si es profesor
+            $view = 'views/reserva/index.php';
+        } else {
+            $reservas = Reserva::all();
+            $view = 'views/reserva/admin_index.php'; // Cambia esta línea si tienes una vista específica para administradores
+        }
+    
         require_once 'views/layout.php';
     }
+
+    public function mis_reservas() {
+        $reservas = Reserva::findByProfesor($_SESSION['user_id']);
+        $view = 'views/reserva/mis_reservas.php';
+        require_once 'views/layout.php';
+    }    
 
     public function show($id) {
         $reserva = Reserva::find($id);
@@ -23,16 +36,20 @@ class ReservaController {
     public function create() {
         $items = Item::all();
         $unidades_didactica = UnidadDidactica::all();
-        $profesores = Profesor::all();
+        $profesores = Profesor::all(); // Aquí estamos obteniendo todos los profesores
         $turnos = Turno::all();
-
         
         $view = 'views/reserva/create.php';
         require_once 'views/layout.php';
     }
-
     
+
     public function store() {
+        if ($_SESSION['role'] != 3) {
+            header('Location: index.php?controller=reserva&action=index');
+            exit;
+        }
+
         if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['item']) && isset($_POST['fecha_prestamo']) && isset($_POST['unidad_didactica']) && isset($_POST['id_profesor']) && isset($_POST['id_turno'])) {
             $selectedItems = $_POST['item'];
     
@@ -68,28 +85,33 @@ class ReservaController {
                     'hora_estado' => $hora_reserva,
                 ]);
     
-                header('Location: index.php?controller=reserva&action=index');
+                header('Location: index.php?controller=reserva&action=mis_reservas');
                 exit;
             } else {
-                // Manejo de error si la creación de la reserva falla
-                // Puedes redirigir a una página de error o mostrar un mensaje adecuado
                 echo "Error al crear la reserva.";
             }
         } else {
-            // Manejo de error si los datos POST esperados no están presentes
-            // Puedes redirigir a una página de error o mostrar un mensaje adecuado
             echo "Error: Datos POST incompletos o incorrectos.";
         }
     }
-    
 
     public function edit($id) {
+        if ($_SESSION['role'] != 3) {
+            header('Location: index.php?controller=reserva&action=index');
+            exit;
+        }
+
         $reserva = Reserva::find($id);
         $view = 'views/reserva/edit.php';
         require_once 'views/layout.php';
     }
 
     public function update($id) {
+        if ($_SESSION['role'] != 3) {
+            header('Location: index.php?controller=reserva&action=index');
+            exit;
+        }
+
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $data = [
                 'fecha_reserva' => $_POST['fecha_reserva'],
@@ -98,14 +120,19 @@ class ReservaController {
                 'id_profesor' => $_POST['id_profesor'],
             ];
             Reserva::update($id, $data);
-            header('Location: index.php?controller=reserva&action=index');
+            header('Location: index.php?controller=reserva&action=mis_reservas');
             exit;
         }
     }
 
     public function delete($id) {
+        if ($_SESSION['role'] != 3) {
+            header('Location: index.php?controller=reserva&action=index');
+            exit;
+        }
+
         Reserva::delete($id);
-        header('Location: index.php?controller=reserva&action=index');
+        header('Location: index.php?controller=reserva&action=mis_reservas');
         exit;
     }
 
@@ -124,4 +151,3 @@ class ReservaController {
         }
     }
 }
-

@@ -1,3 +1,11 @@
+<?php
+if ($_SESSION['role'] != 3) {
+    header('Location: index.php?controller=reserva&action=index');
+    exit;
+}
+
+$profesorId = $_SESSION['user_id']; // ID del profesor
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,6 +18,8 @@
 <div class="container mt-5">
     <h2>Crear Reserva</h2>
     <form action="index.php?controller=reserva&action=store" method="POST">
+        <input type="hidden" name="id_profesor" value="<?php echo $profesorId; ?>" />
+
         <div class="form-group">
             <label for="fecha_prestamo">Fecha de Préstamo:</label>
             <input type="date" class="form-control" id="fecha_prestamo" name="fecha_prestamo" required>
@@ -69,9 +79,8 @@
             <select class="form-control" id="id_profesor" name="id_profesor" required>
                 <option value="" selected disabled>Selecciona un profesor</option>
                 <?php foreach ($profesores as $profesor): ?>
-                    <option value="<?php echo htmlspecialchars($profesor['id_profesor'], ENT_QUOTES, 'UTF-8'); ?>">
-                        <!-- <?php echo htmlspecialchars($profesor['id_usuario'], ENT_QUOTES, 'UTF-8'); ?> -->
-                       <?php echo $_SESSION['user_id'] ?>
+                    <option value="<?php echo htmlspecialchars($profesor['id_usuario'], ENT_QUOTES, 'UTF-8'); ?>">
+                        <?php echo htmlspecialchars($profesor['nombre'], ENT_QUOTES, 'UTF-8'); ?>
                     </option>
                 <?php endforeach; ?>
             </select>

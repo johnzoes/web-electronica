@@ -16,5 +16,4 @@ class AuthorizationMiddleware {
         $roleId = $this->userRole->getRoleIdByUserId($userId);
         return $this->permission->hasPermission($roleId, $permission);
     }
-    
 }

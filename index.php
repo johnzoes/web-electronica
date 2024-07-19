@@ -46,7 +46,7 @@ if (!isset($_SESSION['user_id']) && $controllerName !== 'auth') {
 }
 
 // Verificar si el usuario tiene permiso para acceder al controlador de usuarios
-if ($controllerName == 'usuario' && $_SESSION['role'] != 1) {
+if ($controllerName == 'usuario' && (!isset($_SESSION['role']) || $_SESSION['role'] != 1)) {
     header('Location: index.php');
     exit;
 }
@@ -78,18 +78,15 @@ try {
                     $id = $_GET['id'];
                     $controller->$actionName($id);
                 } else {
-                    // Handle missing ID error
                     echo "Error: ID is required for this action.";
                 }
             } else {
                 $controller->$actionName();
             }
         } else {
-            // Handle invalid action
             echo "Error: Action '$actionName' not found in controller '$controllerClass'.";
         }
     } else {
-        // Handle invalid controller
         echo "Error: Controller '$controllerName' not found.";
     }
 } catch (Exception $e) {

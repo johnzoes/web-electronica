@@ -57,7 +57,7 @@ class Reserva {
         if ($stmt->error) {
             throw new Exception("Error ejecutando la consulta: " . $stmt->error);
         }
-        return self::$conexion->insert_id;  // Devolver el ID de la reserva creada
+        return self::$conexion->insert_id;
     }
 
     /**
@@ -114,6 +114,24 @@ class Reserva {
 
         return $success;
     }
+
+    public static function findByProfesor($profesorId) {
+        $stmt = self::$conexion->prepare("
+            SELECT r.id_reserva, r.fecha_prestamo, u.nombre AS nombre_unidad_didactica, t.nombre AS nombre_turno
+            FROM reserva r
+            JOIN unidad_didactica u ON r.id_unidad_didactica = u.id_unidad_didactica
+            JOIN turno t ON r.id_turno = t.id_turno
+            WHERE r.id_profesor = ?
+        ");
+        if ($stmt === false) {
+            throw new Exception("Error preparando la consulta: " . self::$conexion->error);
+        }
+        $stmt->bind_param("i", $profesorId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+    
 }
 
 Reserva::init();
