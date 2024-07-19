@@ -1,41 +1,28 @@
 <div class="container">
     <h2 class="poppins-bold">Lista de Usuarios</h2>
-    <a href="index.php?controller=usuario&action=create" class="btn btn-success mb-3 poppins-regular" >Crear Usuario</a>
-    <table class="table">
-<br>
-    <a class="btn btn-primary poppins-light" href="index.php?controller=asistente&action=index"> Ver Asistentes</a> <br><br>
- 
-    <a class="btn btn-primary oppins-light"  href="index.php?controller=profesor&action=index">Ver Profesores</a>
-
-<!--
+    <a href="index.php?controller=usuario&action=create" class="btn btn-success mb-3 poppins-regular">Crear Usuario</a>
     
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Nombre de Usuario</th>
-                <th>Rol</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php /*foreach ($datos_usuarios as $usuario): ?>
-            <tr>
-                <td><?php echo htmlspecialchars($usuario['id_usuario']); ?></td>
-                <td><?php echo htmlspecialchars($usuario['nombre']); ?></td>
-                <td><?php echo htmlspecialchars($usuario['nombre_usuario']); ?></td>
-                <td><?php echo htmlspecialchars($usuario['rol']); ?></td>
-                <td>
-                    <a href="index.php?controller=usuario&action=edit&id=<?php echo $usuario['id_usuario']; ?>" class="btn btn-primary">Editar</a>
-                    <form action="index.php?controller=usuario&action=delete&id=<?php echo $usuario['id_usuario']; ?>" method="POST" style="display: inline-block;">
-                        <button type="submit" class="btn btn-danger">Eliminar</button>
-                    </form>
-                </td>
-            </tr>
-            <?php endforeach; */?>
-        </tbody>
-    </table>
+    <div class="row">
+        <!-- Tarjeta para Asistentes -->
+        <div class="col-md-6 mb-4">
+            <div class="card card-gradient text-center">
+                <a href="index.php?controller=asistente&action=index" class="text-decoration-none text-dark">
+                    <div class="card-body">
+                        <h5 class="card-title poppins-bold">Asistentes</h5>
+                    </div>
+                </a>
+            </div>
+        </div>
 
-        -->
+        <!-- Tarjeta para Profesores -->
+        <div class="col-md-6 mb-4">
+            <div class="card card-gradient text-center">
+                <a href="index.php?controller=profesor&action=index" class="text-decoration-none text-dark">
+                    <div class="card-body">
+                        <h5 class="card-title poppins-bold">Profesores</h5>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
-        

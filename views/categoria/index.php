@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="views/categoria/categoria.css">
 <div class="container">
     <h2 class="poppins-bold">Lista de Categorías</h2>
     <?php if ($rol != 3): // 3 es el rol de Profesor ?>
