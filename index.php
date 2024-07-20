@@ -69,7 +69,7 @@ try {
         if ($controllerClass === 'ItemController') {
             $controller = new $controllerClass($authorizationMiddleware);
         } else {
-            $controller = new $controllerClass();
+            $controller = new $controllerClass($db);
         }
 
         if (method_exists($controller, $actionName)) {

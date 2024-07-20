@@ -5,30 +5,45 @@ require_once 'models/unidad_didactica.php';
 require_once 'models/detalle_reserva_item.php';
 require_once 'models/turno.php';
 require_once 'models/estado_reserva.php';
-require_once 'models/notification.php';
-
 require_once 'fpdf/fpdf.php';
 
 class ReservaController {
+    private $conexion;
+
+    public function __construct($conexion) {
+        $this->conexion = $conexion;
+    }
 
     public function index() {
         $rol = isset($_SESSION['role']) ? $_SESSION['role'] : null;
-    
+
         if ($rol == 3) { // Si es profesor
             $view = 'views/reserva/index.php';
         } else {
             $reservas = Reserva::allWithDetails();
             $view = 'views/reserva/admin_index.php';
         }
-    
+
         require_once 'views/layout.php';
     }
 
     public function mis_reservas() {
-        $reservas = Reserva::findByProfesor($_SESSION['user_id']);
+        $stmt = $this->conexion->prepare("SELECT id_profesor FROM profesor WHERE id_usuario = ?");
+        $stmt->bind_param("i", $_SESSION['user_id']);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $profesor = $result->fetch_assoc();
+    
+        if (!$profesor) {
+            echo "Error: Profesor no encontrado.";
+            return;
+        }
+    
+        $reservas = Reserva::findByProfesor($profesor['id_profesor']);
         $view = 'views/reserva/mis_reservas.php';
         require_once 'views/layout.php';
-    }    
+    }
+    
 
     public function show($id) {
         $reserva = Reserva::find($id);
@@ -39,9 +54,8 @@ class ReservaController {
     public function create() {
         $items = Item::all();
         $unidades_didactica = UnidadDidactica::all();
-        $profesores = Profesor::all(); // Aquí estamos obteniendo todos los profesores
         $turnos = Turno::all();
-        
+
         $view = 'views/reserva/create.php';
         require_once 'views/layout.php';
     }
@@ -53,24 +67,34 @@ class ReservaController {
             exit;
         }
 
-        if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['item']) && isset($_POST['fecha_prestamo']) && isset($_POST['unidad_didactica']) && isset($_POST['id_profesor']) && isset($_POST['id_turno'])) {
+        if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['item']) && isset($_POST['fecha_prestamo']) && isset($_POST['unidad_didactica']) && isset($_POST['id_turno'])) {
             $selectedItems = $_POST['item'];
-    
+
+            // Obtener id_profesor de la tabla profesor usando id_usuario de la sesión
+            $stmt = $this->conexion->prepare("SELECT id_profesor FROM profesor WHERE id_usuario = ?");
+            $stmt->bind_param("i", $_SESSION['user_id']);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $profesor = $result->fetch_assoc();
+
+            if (!$profesor) {
+                echo "Error: Profesor no encontrado.";
+                return;
+            }
+
             $data = [
                 'fecha_prestamo' => $_POST['fecha_prestamo'],
                 'id_unidad_didactica' => $_POST['unidad_didactica'],
-                'id_profesor' => $_POST['id_profesor'],
+                'id_profesor' => $profesor['id_profesor'], // Utilizar el id_profesor obtenido
                 'id_turno' => $_POST['id_turno'],
             ];
-    
-            // Crear la reserva
+
             $reservaId = Reserva::create($data);
             $fecha_reserva = date('Y-m-d');
             $hora_reserva = date('H:i:s');
-    
+
             if ($reservaId) {
                 foreach ($selectedItems as $itemId) {
-                    // Crear un nuevo detalle_reserva_item para cada item seleccionado
                     DetalleReservaItem::create([
                         'id_reserva' => $reservaId,
                         'id_item' => $itemId,
@@ -78,8 +102,7 @@ class ReservaController {
                         'hora_reserva' => $hora_reserva,
                     ]);
                 }
-    
-                // Crear el estado de reserva (pendiente)
+
                 EstadoReserva::create([
                     'id_reserva' => $reservaId,
                     'estado' => 'Pendiente',
@@ -88,21 +111,6 @@ class ReservaController {
                     'hora_estado' => $hora_reserva,
                 ]);
 
-
-                $reservation = new Reserva();
-                $reservation->user_id = $_SESSION['user_id'];
-                $reservation->salon_id = $_POST['salon_id'];
-                $reservation->item_id = $_POST['item_id'];
-                $reservation->cantidad = $_POST['cantidad'];
-                $reservation->estado = 'pending';
-        
-                if ($reservation->save()) {
-                    $this->notifyAssistants($reservation);
-                    header('Location: index.php?controller=reserva&action=index&status=success');
-                } else {
-                    header('Location: index.php?controller=reserva&action=create&status=error');
-                }
-    
                 header('Location: index.php?controller=reserva&action=mis_reservas');
                 exit;
             } else {
@@ -111,7 +119,7 @@ class ReservaController {
         } else {
             echo "Error: Datos POST incompletos o incorrectos.";
         }
-    }
+    }   
 
     public function edit($id) {
         if ($_SESSION['role'] != 3) {
@@ -171,6 +179,33 @@ class ReservaController {
 
     public function showPDF($id) {
         $reserva = Reserva::findWithDetails($id);
+
+        if (!$reserva) {
+            echo "Reserva no encontrada.";
+            return;
+        }
+
+        $pdf = new FPDF();
+        $pdf->AddPage();
+        $pdf->SetFont('Arial', 'B', 16);
+
+        $pdf->Cell(40, 10, 'Detalles de la Reserva');
+        $pdf->Ln();
+        $pdf->Cell(40, 10, 'ID: ' . $reserva['id_reserva']);
+        $pdf->Ln();
+        $pdf->Cell(40, 10, 'Fecha de Prestamo: ' . $reserva['fecha_prestamo']);
+        $pdf->Ln();
+        $pdf->Cell(40, 10, 'Unidad Didactica: ' . $reserva['nombre_unidad_didactica']);
+        $pdf->Ln();
+        $pdf->Cell(40, 10, 'Turno: ' . $reserva['nombre_turno']);
+        $pdf->Ln();
+        $pdf->Cell(40, 10, 'Profesor: ' . $reserva['nombre_profesor']);
+
+        $pdf->Output('I', 'reserva_' . $reserva['id_reserva'] . '.pdf');
+    }            
+
+    public function downloadPDF($id) {
+        $reserva = Reserva::findWithDetails($id);
     
         if (!$reserva) {
             echo "Reserva no encontrada.";
@@ -194,6 +229,6 @@ class ReservaController {
         $pdf->Ln();
         $pdf->Cell(40, 10, 'Profesor: ' . $reserva['nombre_profesor']);
     
-        $pdf->Output('I', 'reserva_' . $reserva['id_reserva'] . '.pdf');
+        $pdf->Output('D', 'reserva_' . $reserva['id_reserva'] . '.pdf');
     }
 }
