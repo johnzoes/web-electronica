@@ -7,6 +7,7 @@ require_once 'models/turno.php';
 require_once 'models/estado_reserva.php';
 require_once 'models/notification.php';
 
+require_once 'fpdf/fpdf.php';
 
 class ReservaController {
 
@@ -16,8 +17,8 @@ class ReservaController {
         if ($rol == 3) { // Si es profesor
             $view = 'views/reserva/index.php';
         } else {
-            $reservas = Reserva::all();
-            $view = 'views/reserva/admin_index.php'; // Cambia esta línea si tienes una vista específica para administradores
+            $reservas = Reserva::allWithDetails();
+            $view = 'views/reserva/admin_index.php';
         }
     
         require_once 'views/layout.php';
@@ -167,18 +168,4 @@ class ReservaController {
             echo json_encode([]);
         }
     }
-
-
-    private function notifyAssistants($reservation) {
-        $salon = new Salon();
-        $assistants = $salon->getAssistantsBySalonId($reservation->salon_id);
-        foreach ($assistants as $assistant) {
-            $notification = new Notification();
-            $notification->user_id = $assistant['id_usuario'];
-            $notification->message = "Nueva reserva creada por el profesor " . $_SESSION['username'];
-            $notification->is_read = false;
-            $notification->save();
-        }
-    }
-
 }

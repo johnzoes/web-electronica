@@ -75,18 +75,6 @@ $profesorId = $_SESSION['user_id']; // ID del profesor
         </div>
 
         <div class="form-group">
-            <label for="id_profesor">Profesor:</label>
-            <select class="form-control" id="id_profesor" name="id_profesor" required>
-                <option value="" selected disabled>Selecciona un profesor</option>
-                <?php foreach ($profesores as $profesor): ?>
-                    <option value="<?php echo htmlspecialchars($profesor['id_usuario'], ENT_QUOTES, 'UTF-8'); ?>">
-                        <?php echo htmlspecialchars($profesor['nombre'], ENT_QUOTES, 'UTF-8'); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-
-        <div class="form-group">
             <label for="id_turno">Turno:</label>
             <select class="form-control" id="id_turno" name="id_turno" required>
                 <option value="" selected disabled>Para qué turno lo desea</option>

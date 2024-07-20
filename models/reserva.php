@@ -132,6 +132,36 @@ class Reserva {
         return $result->fetch_all(MYSQLI_ASSOC);
     }
     
+    public static function allWithDetails() {
+        $query = "
+            SELECT r.id_reserva, r.fecha_prestamo, u.nombre AS nombre_unidad_didactica, t.nombre AS nombre_turno, p.nombre AS nombre_profesor
+            FROM reserva r
+            JOIN unidad_didactica u ON r.id_unidad_didactica = u.id_unidad_didactica
+            JOIN turno t ON r.id_turno = t.id_turno
+            JOIN usuario p ON r.id_profesor = p.id_usuario
+        ";
+        $result = self::$conexion->query($query);
+        if ($result === false) {
+            throw new Exception("Error en la consulta: " . self::$conexion->error);
+        }
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public static function findWithDetails($id) {
+        $query = "
+            SELECT r.id_reserva, r.fecha_prestamo, u.nombre AS nombre_unidad_didactica, t.nombre AS nombre_turno, p.nombre AS nombre_profesor
+            FROM reserva r
+            JOIN unidad_didactica u ON r.id_unidad_didactica = u.id_unidad_didactica
+            JOIN turno t ON r.id_turno = t.id_turno
+            JOIN usuario p ON r.id_profesor = p.id_usuario
+            WHERE r.id_reserva = ?
+        ";
+        $stmt = self::$conexion->prepare($query);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc();
+    }
 }
 
 Reserva::init();
