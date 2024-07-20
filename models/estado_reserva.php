@@ -58,21 +58,38 @@ class EstadoReserva {
         return $result->fetch_assoc();
     }
 
-    /**
-     * Crea un nuevo estado de reserva.
-     *
-     * @param array $data
-     * @return bool
-     * @throws Exception
-     */
+    
+    /*Crea un nuevo estado de reserva.*/
+ 
     public static function create($data) {
-        $stmt = self::$conexion->prepare("INSERT INTO estado_reserva (id_reserva, estado, motivo_rechazo, hora_estado, fecha_estado) VALUES (?, ?, ?, ?, ?)");
+        // Preparar la llamada al procedimiento almacenado
+        $stmt = self::$conexion->prepare("CALL InsertEstadoReserva(?, ?, ?)");
+        
         if ($stmt === false) {
             throw new Exception("Error preparando la consulta: " . self::$conexion->error);
         }
-        $stmt->bind_param("issss", $data['id_reserva'], $data['estado'], $data['motivo_rechazo'], $data['hora_estado'], $data['fecha_estado']);
-        return $stmt->execute();
+    
+        // Enlazar parámetros, excluyendo fecha y hora
+        $stmt->bind_param("iss", 
+            $data['id_reserva'], 
+            $data['estado'], 
+            $data['motivo_rechazo']
+        );
+    
+        // Ejecutar el procedimiento almacenado
+        $result = $stmt->execute();
+    
+        // Verificar errores
+        if ($stmt->error) {
+            throw new Exception("Error ejecutando el procedimiento almacenado: " . $stmt->error);
+        }
+    
+        // Cerrar la declaración
+        $stmt->close();
+    
+        return $result;
     }
+    
 
     /**
      * Actualiza un estado de reserva por ID.
@@ -107,5 +124,7 @@ class EstadoReserva {
         return $stmt->execute();
     }
 }
+
+
 
 EstadoReserva::init();

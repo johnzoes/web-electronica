@@ -100,6 +100,21 @@ class Asistente {
         $result = $stmt->get_result();
         return $result->fetch_assoc();
     }
+
+    public static function getAssistantsBySalonId($salon_id) {
+        $query = "SELECT a.id_asistente, u.id_usuario FROM asistente a 
+        JOIN usuario u ON a.id_usuario = u.id_usuario
+         WHERE a.id_salon = ?";
+        if ($stmt = self::$conexion->prepare($query)) {
+            $stmt->bind_param("i", $salon_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            return $result->fetch_all(MYSQLI_ASSOC);
+        }
+        return [];
+    }
+
+
 }
 
 Asistente::init();

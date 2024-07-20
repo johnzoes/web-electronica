@@ -89,18 +89,17 @@ class Salon {
         return $stmt->execute();
     }
 
-    public function getAssistantsBySalonId($salon_id) {
-        $query = "SELECT a.id_asistente, u.nombre_usuario FROM asistente a 
-        JOIN usuario u ON a.id_asistente = u.id_usuario
-         WHERE a.id_salon = ?";
-        if ($stmt = self::$conexion->prepare($query)) {
-            $stmt->bind_param("i", $salon_id);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            return $result->fetch_all(MYSQLI_ASSOC);
-        }
-        return [];
+
+    public static function getIdSalonbyIdItem($id_item){
+        $stmt = self::$conexion->prepare("CALL GetSalonIdByItem(?)");
+        $stmt->bind_param("i", $id_item);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc();
+
     }
+
+
 }
 
 Salon::init();

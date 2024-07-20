@@ -5,7 +5,12 @@ require_once 'models/unidad_didactica.php';
 require_once 'models/detalle_reserva_item.php';
 require_once 'models/turno.php';
 require_once 'models/estado_reserva.php';
+require_once 'models/notification.php'; // Añadir esta línea
+require_once 'models/usuario.php'; // Añadir esta línea
 require_once 'fpdf/fpdf.php';
+require_once 'models/asistente.php';
+
+
 
 class ReservaController {
     private $conexion;
@@ -66,35 +71,39 @@ class ReservaController {
             header('Location: index.php?controller=reserva&action=index');
             exit;
         }
-
+    
         if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['item']) && isset($_POST['fecha_prestamo']) && isset($_POST['unidad_didactica']) && isset($_POST['id_turno'])) {
-            $selectedItems = $_POST['item'];
+           
 
+            $selectedItems = $_POST['item'];
+    
             // Obtener id_profesor de la tabla profesor usando id_usuario de la sesión
             $stmt = $this->conexion->prepare("SELECT id_profesor FROM profesor WHERE id_usuario = ?");
             $stmt->bind_param("i", $_SESSION['user_id']);
             $stmt->execute();
             $result = $stmt->get_result();
             $profesor = $result->fetch_assoc();
-
+    
             if (!$profesor) {
                 echo "Error: Profesor no encontrado.";
                 return;
             }
-
+    
             $data = [
                 'fecha_prestamo' => $_POST['fecha_prestamo'],
                 'id_unidad_didactica' => $_POST['unidad_didactica'],
                 'id_profesor' => $profesor['id_profesor'], // Utilizar el id_profesor obtenido
                 'id_turno' => $_POST['id_turno'],
             ];
-
+    
             $reservaId = Reserva::create($data);
             $fecha_reserva = date('Y-m-d');
             $hora_reserva = date('H:i:s');
-
+    
             if ($reservaId) {
                 foreach ($selectedItems as $itemId) {
+
+                    $id_salon = Salon::getIdSalonbyIdItem($itemId);
                     DetalleReservaItem::create([
                         'id_reserva' => $reservaId,
                         'id_item' => $itemId,
@@ -102,15 +111,24 @@ class ReservaController {
                         'hora_reserva' => $hora_reserva,
                     ]);
                 }
-
+    
                 EstadoReserva::create([
                     'id_reserva' => $reservaId,
-                    'estado' => 'Pendiente',
+                    'estado' => 'pendiente',
                     'motivo_rechazo' => '',
-                    'fecha_estado' => $fecha_reserva,
-                    'hora_estado' => $hora_reserva,
                 ]);
-
+    
+                // Crear notificación para los asistentes
+                $message = "Nueva reserva creada por el profesor con ID " . $profesor['id_profesor'];
+                $assistants = Asistente::getAssistantsBySalonId($id_salon);
+                foreach ($assistants as $assistant) {
+                    $notification = new Notification();
+                    $notification->user_id = $assistant['id_usuario'];
+                    $notification->message = $message;
+                    $notification->is_read = 0;
+                    $notification->save();
+                }
+    
                 header('Location: index.php?controller=reserva&action=mis_reservas');
                 exit;
             } else {
@@ -119,7 +137,8 @@ class ReservaController {
         } else {
             echo "Error: Datos POST incompletos o incorrectos.";
         }
-    }   
+    }
+    
 
     public function edit($id) {
         if ($_SESSION['role'] != 3) {
