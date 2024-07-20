@@ -168,4 +168,32 @@ class ReservaController {
             echo json_encode([]);
         }
     }
+
+    public function showPDF($id) {
+        $reserva = Reserva::findWithDetails($id);
+    
+        if (!$reserva) {
+            echo "Reserva no encontrada.";
+            return;
+        }
+    
+        $pdf = new FPDF();
+        $pdf->AddPage();
+        $pdf->SetFont('Arial', 'B', 16);
+    
+        // Agrega contenido al PDF
+        $pdf->Cell(40, 10, 'Detalles de la Reserva');
+        $pdf->Ln();
+        $pdf->Cell(40, 10, 'ID: ' . $reserva['id_reserva']);
+        $pdf->Ln();
+        $pdf->Cell(40, 10, 'Fecha de Prestamo: ' . $reserva['fecha_prestamo']);
+        $pdf->Ln();
+        $pdf->Cell(40, 10, 'Unidad Didactica: ' . $reserva['nombre_unidad_didactica']);
+        $pdf->Ln();
+        $pdf->Cell(40, 10, 'Turno: ' . $reserva['nombre_turno']);
+        $pdf->Ln();
+        $pdf->Cell(40, 10, 'Profesor: ' . $reserva['nombre_profesor']);
+    
+        $pdf->Output('I', 'reserva_' . $reserva['id_reserva'] . '.pdf');
+    }
 }
