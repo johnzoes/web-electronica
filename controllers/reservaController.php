@@ -5,6 +5,7 @@ require_once 'models/unidad_didactica.php';
 require_once 'models/detalle_reserva_item.php';
 require_once 'models/turno.php';
 require_once 'models/estado_reserva.php';
+require_once 'fpdf/fpdf.php';
 
 class ReservaController {
 
@@ -14,8 +15,8 @@ class ReservaController {
         if ($rol == 3) { // Si es profesor
             $view = 'views/reserva/index.php';
         } else {
-            $reservas = Reserva::all();
-            $view = 'views/reserva/admin_index.php'; // Cambia esta línea si tienes una vista específica para administradores
+            $reservas = Reserva::allWithDetails();
+            $view = 'views/reserva/admin_index.php';
         }
     
         require_once 'views/layout.php';
@@ -149,5 +150,61 @@ class ReservaController {
         } else {
             echo json_encode([]);
         }
+    }
+
+    public function showPDF($id) {
+        $reserva = Reserva::findWithDetails($id);
+    
+        if (!$reserva) {
+            echo "Reserva no encontrada.";
+            return;
+        }
+    
+        $pdf = new FPDF();
+        $pdf->AddPage();
+        $pdf->SetFont('Arial', 'B', 16);
+    
+        // Agrega contenido al PDF
+        $pdf->Cell(40, 10, 'Detalles de la Reserva');
+        $pdf->Ln();
+        $pdf->Cell(40, 10, 'ID: ' . $reserva['id_reserva']);
+        $pdf->Ln();
+        $pdf->Cell(40, 10, 'Fecha de Prestamo: ' . $reserva['fecha_prestamo']);
+        $pdf->Ln();
+        $pdf->Cell(40, 10, 'Unidad Didactica: ' . $reserva['nombre_unidad_didactica']);
+        $pdf->Ln();
+        $pdf->Cell(40, 10, 'Turno: ' . $reserva['nombre_turno']);
+        $pdf->Ln();
+        $pdf->Cell(40, 10, 'Profesor: ' . $reserva['nombre_profesor']);
+    
+        $pdf->Output('I', 'reserva_' . $reserva['id_reserva'] . '.pdf');
+    }
+    
+    public function downloadPDF($id) {
+        $reserva = Reserva::findWithDetails($id);
+
+        if (!$reserva) {
+            echo "Reserva no encontrada.";
+            return;
+        }
+
+        $pdf = new FPDF();
+        $pdf->AddPage();
+        $pdf->SetFont('Arial', 'B', 16);
+
+        // Agrega contenido al PDF
+        $pdf->Cell(40, 10, 'Detalles de la Reserva');
+        $pdf->Ln();
+        $pdf->Cell(40, 10, 'ID: ' . $reserva['id_reserva']);
+        $pdf->Ln();
+        $pdf->Cell(40, 10, 'Fecha de Prestamo: ' . $reserva['fecha_prestamo']);
+        $pdf->Ln();
+        $pdf->Cell(40, 10, 'Unidad Didactica: ' . $reserva['nombre_unidad_didactica']);
+        $pdf->Ln();
+        $pdf->Cell(40, 10, 'Turno: ' . $reserva['nombre_turno']);
+        $pdf->Ln();
+        $pdf->Cell(40, 10, 'Profesor: ' . $reserva['nombre_profesor']);
+
+        $pdf->Output('D', 'reserva_' . $reserva['id_reserva'] . '.pdf');
     }
 }

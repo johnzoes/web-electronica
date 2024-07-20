@@ -73,7 +73,7 @@ try {
         }
 
         if (method_exists($controller, $actionName)) {
-            if (in_array($actionName, ['edit', 'update', 'delete'])) {
+            if (in_array($actionName, ['edit', 'update', 'delete', 'showPDF', 'downloadPDF'])) {
                 if (isset($_GET['id'])) {
                     $id = $_GET['id'];
                     $controller->$actionName($id);

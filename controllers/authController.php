@@ -58,7 +58,7 @@ class AuthController {
                 header('Location: index.php');
                 break;
             case 2: // Asistente
-                header('Location: index.php?controller=asistente&action=index');
+                header('Location: index.php?controller=reserva&action=index'); // Redirigir a la lista de reservas
                 break;
             case 3: // Profesor
                 header('Location: index.php?controller=reserva&action=index');
@@ -68,7 +68,7 @@ class AuthController {
                 break;
         }
         exit;
-    }    
+    }
 
     private function showLoginError($error) {
         // Mostrar la página de login con un mensaje de error
