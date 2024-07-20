@@ -5,6 +5,8 @@ require_once 'models/unidad_didactica.php';
 require_once 'models/detalle_reserva_item.php';
 require_once 'models/turno.php';
 require_once 'models/estado_reserva.php';
+require_once 'models/notification.php';
+
 
 class ReservaController {
 
@@ -84,6 +86,21 @@ class ReservaController {
                     'fecha_estado' => $fecha_reserva,
                     'hora_estado' => $hora_reserva,
                 ]);
+
+
+                $reservation = new Reserva();
+                $reservation->user_id = $_SESSION['user_id'];
+                $reservation->salon_id = $_POST['salon_id'];
+                $reservation->item_id = $_POST['item_id'];
+                $reservation->cantidad = $_POST['cantidad'];
+                $reservation->estado = 'pending';
+        
+                if ($reservation->save()) {
+                    $this->notifyAssistants($reservation);
+                    header('Location: index.php?controller=reserva&action=index&status=success');
+                } else {
+                    header('Location: index.php?controller=reserva&action=create&status=error');
+                }
     
                 header('Location: index.php?controller=reserva&action=mis_reservas');
                 exit;
@@ -150,4 +167,18 @@ class ReservaController {
             echo json_encode([]);
         }
     }
+
+
+    private function notifyAssistants($reservation) {
+        $salon = new Salon();
+        $assistants = $salon->getAssistantsBySalonId($reservation->salon_id);
+        foreach ($assistants as $assistant) {
+            $notification = new Notification();
+            $notification->user_id = $assistant['id_usuario'];
+            $notification->message = "Nueva reserva creada por el profesor " . $_SESSION['username'];
+            $notification->is_read = false;
+            $notification->save();
+        }
+    }
+
 }
