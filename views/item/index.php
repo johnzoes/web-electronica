@@ -18,13 +18,14 @@ $role = $_SESSION['role'];
 $db = connectDatabase();
 
 ?>
-
+<link rel="stylesheet" href="views/item/item.css">
 <div class="container">
     <h2 class="my-4 poppins-bold">Lista de Items</h2>
     <?php if ($role !== 3): // El rol 3 es para Profesor ?>
         <a href="index.php?controller=item&action=create&id_categoria=<?php echo htmlspecialchars($id_categoria, ENT_QUOTES, 'UTF-8'); ?>"
             class="btn btn-success mb-3">Crear Item</a>
     <?php endif; ?>
+    <div class="center-table">
     <table class="table-modern">
         <thead>
             <tr>
@@ -85,6 +86,7 @@ $db = connectDatabase();
             <?php endif; ?>
         </tbody>
     </table>
+    </div>
 </div>
 
 <?php if (isset($_GET['message'])): ?>
