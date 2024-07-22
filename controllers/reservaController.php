@@ -5,12 +5,10 @@ require_once 'models/unidad_didactica.php';
 require_once 'models/detalle_reserva_item.php';
 require_once 'models/turno.php';
 require_once 'models/estado_reserva.php';
-require_once 'models/notification.php'; // Añadir esta línea
-require_once 'models/usuario.php'; // Añadir esta línea
+require_once 'models/notificacion.php';
+require_once 'models/usuario.php';
 require_once 'fpdf/fpdf.php';
 require_once 'models/asistente.php';
-
-
 
 class ReservaController {
     private $conexion;
@@ -21,16 +19,20 @@ class ReservaController {
 
     public function index() {
         $rol = isset($_SESSION['role']) ? $_SESSION['role'] : null;
-
+    
+        // Obtener notificaciones no leídas
+        $notificaciones_no_leidas = Notification::countUnreadByUser($_SESSION['user_id']);
+        $notificaciones = Notification::getByUserId($_SESSION['user_id']);
+    
         if ($rol == 3) { // Si es profesor
             $view = 'views/reserva/index.php';
         } else {
             $reservas = Reserva::allWithDetails();
             $view = 'views/reserva/admin_index.php';
         }
-
+    
         require_once 'views/layout.php';
-    }
+    }     
 
     public function mis_reservas() {
         $stmt = $this->conexion->prepare("SELECT id_profesor FROM profesor WHERE id_usuario = ?");
@@ -73,12 +75,10 @@ class ReservaController {
         }
     
         if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['item']) && isset($_POST['fecha_prestamo']) && isset($_POST['unidad_didactica']) && isset($_POST['id_turno'])) {
-           
-
             $selectedItems = $_POST['item'];
     
-            // Obtener id_profesor de la tabla profesor usando id_usuario de la sesión
-            $stmt = $this->conexion->prepare("SELECT id_profesor FROM profesor WHERE id_usuario = ?");
+            // Obtener id_profesor y nombre del profesor de la tabla profesor usando id_usuario de la sesión
+            $stmt = $this->conexion->prepare("SELECT p.id_profesor, u.nombre, u.apellidos FROM profesor p JOIN usuario u ON p.id_usuario = u.id_usuario WHERE p.id_usuario = ?");
             $stmt->bind_param("i", $_SESSION['user_id']);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -102,7 +102,6 @@ class ReservaController {
     
             if ($reservaId) {
                 foreach ($selectedItems as $itemId) {
-
                     $id_salon = Salon::getIdSalonbyIdItem($itemId);
                     DetalleReservaItem::create([
                         'id_reserva' => $reservaId,
@@ -118,14 +117,21 @@ class ReservaController {
                     'motivo_rechazo' => '',
                 ]);
     
-                // Crear notificación para los asistentes
-                $message = "Nueva reserva creada por el profesor con ID " . $profesor['id_profesor'];
-                $assistants = Asistente::getAssistantsBySalonId($id_salon);
+                // Crear notificación para todos los asistentes
+                $estado_reserva = 'pendiente';
+                $message = "Reserva $estado_reserva creada por el profesor " . $profesor['nombre'] . " " . $profesor['apellidos'];
+    
+                $stmt = $this->conexion->prepare("SELECT id_usuario FROM asistente");
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $assistants = $result->fetch_all(MYSQLI_ASSOC);
+    
                 foreach ($assistants as $assistant) {
                     $notification = new Notification();
                     $notification->user_id = $assistant['id_usuario'];
                     $notification->message = $message;
                     $notification->is_read = 0;
+                    $notification->id_reserva = $reservaId;
                     $notification->save();
                 }
     
@@ -137,9 +143,8 @@ class ReservaController {
         } else {
             echo "Error: Datos POST incompletos o incorrectos.";
         }
-    }
+    }       
     
-
     public function edit($id) {
         if ($_SESSION['role'] != 3) {
             header('Location: index.php?controller=reserva&action=index');
@@ -198,16 +203,16 @@ class ReservaController {
 
     public function showPDF($id) {
         $reserva = Reserva::findWithDetails($id);
-
+    
         if (!$reserva) {
             echo "Reserva no encontrada.";
             return;
         }
-
+    
         $pdf = new FPDF();
         $pdf->AddPage();
         $pdf->SetFont('Arial', 'B', 16);
-
+    
         $pdf->Cell(40, 10, 'Detalles de la Reserva');
         $pdf->Ln();
         $pdf->Cell(40, 10, 'ID: ' . $reserva['id_reserva']);
@@ -219,9 +224,9 @@ class ReservaController {
         $pdf->Cell(40, 10, 'Turno: ' . $reserva['nombre_turno']);
         $pdf->Ln();
         $pdf->Cell(40, 10, 'Profesor: ' . $reserva['nombre_profesor']);
-
+    
         $pdf->Output('I', 'reserva_' . $reserva['id_reserva'] . '.pdf');
-    }            
+    }             
 
     public function downloadPDF($id) {
         $reserva = Reserva::findWithDetails($id);

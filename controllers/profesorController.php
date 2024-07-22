@@ -1,6 +1,7 @@
 <?php
 require_once 'models/profesor.php';
 require_once 'models/usuario.php';
+require_once 'models/notificacion.php';
 
 class ProfesorController {
 
@@ -8,27 +9,21 @@ class ProfesorController {
         $profesores = Profesor::all();
 
         $datos_profesores = [];
-
         foreach ($profesores as $profesor){
             $usuario = Usuario::find($profesor['id_usuario']);
-
-            if($usuario){
+            if ($usuario){
                 $datos_profesores[] = [
                     'id_usuario' => $usuario['id_usuario'],
-
                     'id_profesor' => $profesor['id_profesor'],
                     'nombre_usuario' => $usuario['nombre_usuario'],
                     'nombre' => $usuario['nombre'],
                     'apellidos' => $usuario['apellidos'],
                 ];
             }
-            else{
-
-            }
-
         }
 
-
+        $notificaciones_no_leidas = Notification::countUnreadByUser($_SESSION['user_id']);
+        $notificaciones = Notification::getByUserId($_SESSION['user_id']);
 
         $view = 'views/profesor/index.php';
         require_once 'views/layout.php';
@@ -81,4 +76,3 @@ class ProfesorController {
         exit;
     }
 }
-?>

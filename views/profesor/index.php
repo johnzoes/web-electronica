@@ -27,4 +27,17 @@
             <?php endforeach; ?>
         </tbody>
     </table>
+
+    <h2 class="my-4 poppins-bold">Notificaciones</h2>
+    <ul class="list-group">
+        <?php foreach ($notificaciones as $notificacion): ?>
+            <li class="list-group-item <?php echo $notificacion['is_read'] ? '' : 'list-group-item-info'; ?>">
+                <?php echo htmlspecialchars($notificacion['message'], ENT_QUOTES, 'UTF-8'); ?>
+                <a href="index.php?controller=notificacion&action=markAsRead&id=<?php echo $notificacion['id']; ?>" class="btn btn-primary btn-sm float-end">Marcar como leída</a>
+            </li>
+        <?php endforeach; ?>
+        <?php if (empty($notificaciones)): ?>
+            <li class="list-group-item">No hay notificaciones</li>
+        <?php endif; ?>
+    </ul>
 </div>

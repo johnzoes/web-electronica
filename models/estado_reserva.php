@@ -123,6 +123,35 @@ class EstadoReserva {
         $stmt->bind_param("i", $id);
         return $stmt->execute();
     }
+
+    public static function updateByReservaId($id_reserva, $data) {
+        // Preparar la llamada al procedimiento almacenado
+        $stmt = self::$conexion->prepare("CALL InsertEstadoReserva(?, ?, ?)");
+        
+        if ($stmt === false) {
+            throw new Exception("Error preparando la consulta: " . self::$conexion->error);
+        }
+    
+        // Enlazar parámetros, excluyendo fecha y hora
+        $stmt->bind_param("iss", 
+            $id_reserva, 
+            $data['estado'], 
+            $data['motivo_rechazo']
+        );
+    
+        // Ejecutar el procedimiento almacenado
+        $result = $stmt->execute();
+    
+        // Verificar errores
+        if ($stmt->error) {
+            throw new Exception("Error ejecutando el procedimiento almacenado: " . $stmt->error);
+        }
+    
+        // Cerrar la declaración
+        $stmt->close();
+    
+        return $result;
+    }     
 }
 
 

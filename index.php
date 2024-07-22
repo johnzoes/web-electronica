@@ -14,11 +14,13 @@ require_once 'controllers/unidadDidacticaController.php';
 require_once 'controllers/usuarioController.php';
 require_once 'controllers/authController.php';
 require_once 'controllers/asistenteController.php';
+require_once 'controllers/notificacionController.php';
 require_once 'middleware/AuthorizationMiddleware.php';
 require_once 'models/usuario.php';
 require_once 'models/permisos.php';
 require_once 'models/userRole.php';
 require_once 'models/database.php';
+require_once 'models/notificacion.php';
 
 $controllerName = isset($_GET['controller']) ? htmlspecialchars($_GET['controller']) : 'categoria';
 $actionName = isset($_GET['action']) ? htmlspecialchars($_GET['action']) : 'index';
@@ -36,7 +38,8 @@ $controllers = [
     'rol' => 'RolController',
     'detalle_reserva_item' => 'DetalleReservaItemController',
     'asistente' => 'AsistenteController',
-    'auth' => 'AuthController'
+    'auth' => 'AuthController',
+    'notificacion' => 'NotificacionController'
 ];
 
 // Verificar si el usuario está autenticado
@@ -62,6 +65,15 @@ try {
     // Crear una instancia de AuthorizationMiddleware
     $authorizationMiddleware = new AuthorizationMiddleware($userRole, $permission);
 
+    // Obtener las notificaciones para el usuario actual
+    if (isset($_SESSION['user_id'])) {
+        $notificaciones = Notification::getByUserId($_SESSION['user_id']);
+        $notificaciones_no_leidas = Notification::countUnreadByUser($_SESSION['user_id']);
+    } else {
+        $notificaciones = [];
+        $notificaciones_no_leidas = 0;
+    }
+
     // Instanciar el controlador con dependencias
     if (array_key_exists($controllerName, $controllers)) {
         $controllerClass = $controllers[$controllerName];
@@ -73,7 +85,7 @@ try {
         }
 
         if (method_exists($controller, $actionName)) {
-            if (in_array($actionName, ['edit', 'update', 'delete', 'showPDF', 'downloadPDF'])) {
+            if (in_array($actionName, ['edit', 'update', 'delete', 'showPDF', 'downloadPDF', 'view'])) {
                 if (isset($_GET['id'])) {
                     $id = $_GET['id'];
                     $controller->$actionName($id);

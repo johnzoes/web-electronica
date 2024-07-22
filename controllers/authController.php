@@ -27,7 +27,6 @@ class AuthController {
     }
 
     public function logout() {
-        session_start();
         session_unset(); // Eliminar todas las variables de sesión
         session_destroy(); // Destruir la sesión
         header('Location: index.php?controller=auth&action=login');
@@ -45,7 +44,6 @@ class AuthController {
 
     private function startUserSession($user) {
         // Iniciar la sesión y establecer variables de sesión
-        session_start();
         $_SESSION['user_id'] = $user['id_usuario'];
         $_SESSION['username'] = $user['nombre_usuario'];
         $_SESSION['role'] = $user['id_rol'];

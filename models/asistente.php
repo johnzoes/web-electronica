@@ -3,7 +3,11 @@ require_once 'database.php';
 
 class Asistente {
     private static $conexion;
+    private $db;
 
+    public function __construct() {
+        $this->db = connectDatabase();
+    }
     public static function init() {
         self::$conexion = $GLOBALS['conexion'];
     }
@@ -114,7 +118,12 @@ class Asistente {
         return [];
     }
 
-
+    public static function getAllAssistants() {
+        $db = connectDatabase();
+        $query = "SELECT id_asistente, id_usuario FROM asistente";
+        $result = $db->query($query);
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
 }
 
 Asistente::init();
