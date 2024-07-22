@@ -213,17 +213,17 @@ class ReservaController {
         $pdf->AddPage();
         $pdf->SetFont('Arial', 'B', 16);
     
-        $pdf->Cell(40, 10, 'Detalles de la Reserva');
+        $pdf->Cell(40, 10, utf8_decode('Detalles de la Reserva'));
         $pdf->Ln();
-        $pdf->Cell(40, 10, 'ID: ' . $reserva['id_reserva']);
+        $pdf->Cell(40, 10, utf8_decode('ID: ' . $reserva['id_reserva']));
         $pdf->Ln();
-        $pdf->Cell(40, 10, 'Fecha de Prestamo: ' . $reserva['fecha_prestamo']);
+        $pdf->Cell(40, 10, utf8_decode('Fecha de Prestamo: ' . $reserva['fecha_prestamo']));
         $pdf->Ln();
-        $pdf->Cell(40, 10, 'Unidad Didactica: ' . $reserva['nombre_unidad_didactica']);
+        $pdf->Cell(40, 10, utf8_decode('Unidad Didactica: ' . $reserva['nombre_unidad_didactica']));
         $pdf->Ln();
-        $pdf->Cell(40, 10, 'Turno: ' . $reserva['nombre_turno']);
+        $pdf->Cell(40, 10, utf8_decode('Turno: ' . $reserva['nombre_turno']));
         $pdf->Ln();
-        $pdf->Cell(40, 10, 'Profesor: ' . $reserva['nombre_profesor']);
+        $pdf->Cell(40, 10, utf8_decode('Profesor: ' . $reserva['nombre_profesor']));
     
         $pdf->Output('I', 'reserva_' . $reserva['id_reserva'] . '.pdf');
     }             
@@ -241,17 +241,17 @@ class ReservaController {
         $pdf->SetFont('Arial', 'B', 16);
     
         // Agrega contenido al PDF
-        $pdf->Cell(40, 10, 'Detalles de la Reserva');
+        $pdf->Cell(40, 10, utf8_decode('Detalles de la Reserva'));
         $pdf->Ln();
-        $pdf->Cell(40, 10, 'ID: ' . $reserva['id_reserva']);
+        $pdf->Cell(40, 10, utf8_decode('ID: ' . $reserva['id_reserva']));
         $pdf->Ln();
-        $pdf->Cell(40, 10, 'Fecha de Prestamo: ' . $reserva['fecha_prestamo']);
+        $pdf->Cell(40, 10, utf8_decode('Fecha de Prestamo: ' . $reserva['fecha_prestamo']));
         $pdf->Ln();
-        $pdf->Cell(40, 10, 'Unidad Didactica: ' . $reserva['nombre_unidad_didactica']);
+        $pdf->Cell(40, 10, utf8_decode('Unidad Didactica: ' . $reserva['nombre_unidad_didactica']));
         $pdf->Ln();
-        $pdf->Cell(40, 10, 'Turno: ' . $reserva['nombre_turno']);
+        $pdf->Cell(40, 10, utf8_decode('Turno: ' . $reserva['nombre_turno']));
         $pdf->Ln();
-        $pdf->Cell(40, 10, 'Profesor: ' . $reserva['nombre_profesor']);
+        $pdf->Cell(40, 10, utf8_decode('Profesor: ' . $reserva['nombre_profesor']));
     
         $pdf->Output('D', 'reserva_' . $reserva['id_reserva'] . '.pdf');
     }
