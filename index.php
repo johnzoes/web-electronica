@@ -2,6 +2,7 @@
 session_start();
 
 require_once 'controllers/categoriaController.php';
+require_once 'controllers/notificacionController.php';
 require_once 'controllers/profesorController.php';
 require_once 'controllers/detalleReservaItemController.php';
 require_once 'controllers/itemController.php';
@@ -85,7 +86,7 @@ try {
         }
 
         if (method_exists($controller, $actionName)) {
-            if (in_array($actionName, ['edit', 'update', 'delete', 'showPDF', 'downloadPDF', 'view'])) {
+            if (in_array($actionName, ['edit', 'update', 'delete', 'showPDF', 'downloadPDF', 'view', 'aceptar_reserva'])) {
                 if (isset($_GET['id'])) {
                     $id = $_GET['id'];
                     $controller->$actionName($id);

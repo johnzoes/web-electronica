@@ -15,7 +15,7 @@ class Profesor {
      * @throws Exception
      */
     public static function all() {
-        $result = self::$conexion->query("SELECT usuario.id_usuario, usuario.nombre FROM profesor JOIN usuario ON profesor.id_usuario = usuario.id_usuario");
+        $result = self::$conexion->query("SELECT usuario.id_usuario, profesor.id_profesor , usuario.nombre FROM profesor JOIN usuario ON profesor.id_usuario = usuario.id_usuario");
         if ($result === false) {
             throw new Exception("Error en la consulta: " . self::$conexion->error);
         }
