@@ -1,3 +1,9 @@
+<?php
+
+require_once 'models/estado_reserva.php';
+
+?>
+
 <div class="container-main">
     <h2 class="my-4 poppins-bold">Lista de Asistentes</h2>
     <table class="table-modern">
@@ -56,9 +62,19 @@
                     <td><?php echo htmlspecialchars($reserva['nombre_turno'], ENT_QUOTES, 'UTF-8'); ?></td>
                     <td><?php echo htmlspecialchars($reserva['nombre_profesor'], ENT_QUOTES, 'UTF-8'); ?></td>
                     <td>
-                        <a href="index.php?controller=asistente&action=aceptar_reserva&id_reserva=<?php echo htmlspecialchars($reserva['id_reserva'], ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-success btn-sm">
-                            Aceptar
-                        </a>
+
+                    <?php $estadoReserva =EstadoReserva::getEstadoByReserva($reserva['id_reserva']); ?>
+
+                    <?php if ($estadoReserva['estado'] == 'Pendiente'): ?>
+                <a href="index.php?controller=asistente&action=aceptar_reserva&id_reserva=<?php echo htmlspecialchars($reserva['id_reserva'], ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-success btn-sm">
+                    Aceptar
+                </a>
+            <?php elseif ($estadoReserva['estado'] == 'aceptada'): ?>
+                <a href="index.php?controller=asistente&action=realizar_reserva&id_reserva=<?php echo htmlspecialchars($reserva['id_reserva'], ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-primary btn-sm">
+                    Realizar
+                </a>
+            <?php endif; ?>
+
                     </td>
                 </tr>
             <?php endforeach; ?>

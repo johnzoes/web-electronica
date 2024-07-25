@@ -78,17 +78,17 @@ try {
     // Instanciar el controlador con dependencias
     if (array_key_exists($controllerName, $controllers)) {
         $controllerClass = $controllers[$controllerName];
-
+    
         if ($controllerClass === 'ItemController') {
             $controller = new $controllerClass($authorizationMiddleware);
         } else {
             $controller = new $controllerClass($db);
         }
-
+    
         if (method_exists($controller, $actionName)) {
             if (in_array($actionName, ['edit', 'update', 'delete', 'showPDF', 'downloadPDF', 'view', 'aceptar_reserva'])) {
-                if (isset($_GET['id'])) {
-                    $id = $_GET['id'];
+                if (isset($_GET['id']) || isset($_GET['id_reserva'])) {
+                    $id = isset($_GET['id']) ? $_GET['id'] : $_GET['id_reserva'];
                     $controller->$actionName($id);
                 } else {
                     echo "Error: ID is required for this action.";
