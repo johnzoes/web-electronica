@@ -86,13 +86,13 @@ class Reserva {
      */
     public static function delete($id) {
         // Eliminar estado de la reserva
-        $stmtDeleteEstado = self::$conexion->prepare("DELETE FROM estado_reserva WHERE id_reserva = ?");
+       /* $stmtDeleteEstado = self::$conexion->prepare("DELETE FROM estado_reserva WHERE id_reserva = ?");
         if ($stmtDeleteEstado === false) {
             throw new Exception("Error preparando la consulta: " . self::$conexion->error);
         }
         $stmtDeleteEstado->bind_param("i", $id);
         $stmtDeleteEstado->execute();
-        $stmtDeleteEstado->close();
+        $stmtDeleteEstado->close();*/
 
         // Eliminar detalles de la reserva
         $stmtDeleteDetalle = self::$conexion->prepare("DELETE FROM detalle_reserva_item WHERE id_reserva = ?");

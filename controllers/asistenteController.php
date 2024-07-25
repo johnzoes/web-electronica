@@ -90,24 +90,43 @@ class AsistenteController {
         exit;
     }
 
-    public function aceptar_reserva($id_reserva) {
+    public function actualizar_estado_reserva($id_reserva, $nuevo_estado, $motivo_rechazo = '') {
+        // Actualizar el estado de la reserva en la base de datos
         EstadoReserva::updateByReservaId($id_reserva, [
-            'estado' => 'aceptado',
-            'motivo_rechazo' => '',
+            'estado' => $nuevo_estado,
+            'motivo_rechazo' => $motivo_rechazo,
         ]);
-    
+
+        // Obtener información de la reserva y el usuario asociado
         $reserva = Reserva::find($id_reserva);
         $profesor = Profesor::find($reserva['id_profesor']);
         $usuario = Usuario::find($profesor['id_usuario']);
-    
-        // Crear notificación para el profesor
+
+        // Crear notificación para el usuario
         $notification = new Notification();
         $notification->user_id = $usuario['id_usuario'];
-        $notification->message = "Tu reserva con ID $id_reserva ha sido aceptada.";
+        $notification->message = "Tu reserva con ID $id_reserva ha sido $nuevo_estado.";
         $notification->is_read = 0;
         $notification->save();
-    
+
+        // Redirigir al asistente a la página principal de reservas
         header('Location: index.php?controller=asistente&action=index');
         exit;
-    }      
+    }
+
+    public function aceptar_reserva($id_reserva) {
+        $this->actualizar_estado_reserva($id_reserva, 'aprobado');
+    }
+
+    public function rechazar_reserva($id_reserva) {
+        $this->actualizar_estado_reserva($id_reserva, 'rechazado', 'Motivo del rechazo');
+    }
+
+    public function prestar_reserva($id_reserva) {
+        $this->actualizar_estado_reserva($id_reserva, 'prestado');
+    }
+
+    public function devolver_reserva($id_reserva) {
+        $this->actualizar_estado_reserva($id_reserva, 'devuelto');
+    }
 }
