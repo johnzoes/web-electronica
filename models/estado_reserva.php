@@ -47,16 +47,17 @@ class EstadoReserva {
      * @return array|null
      * @throws Exception
      */
-    public static function getEstadoByReserva($id_reserva) {
-        $stmt = self::$conexion->prepare("SELECT * FROM estado_reserva WHERE id_reserva = ?");
-        if ($stmt === false) {
-            throw new Exception("Error preparando la consulta: " . self::$conexion->error);
-        }
-        $stmt->bind_param("i", $id_reserva);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        return $result->fetch_assoc();
+
+public static function getEstadoByReserva($id_reserva) {
+    $stmt = self::$conexion->prepare("SELECT * FROM estado_reserva WHERE id_reserva = ? ORDER BY id_estado DESC LIMIT 1");
+    if ($stmt === false) {
+        throw new Exception("Error preparando la consulta: " . self::$conexion->error);
     }
+    $stmt->bind_param("i", $id_reserva);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result->fetch_assoc();
+}
 
     
     /*Crea un nuevo estado de reserva.*/
