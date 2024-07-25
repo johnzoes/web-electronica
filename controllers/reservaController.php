@@ -136,14 +136,14 @@ class ReservaController {
                 }
     
                 header('Location: index.php?controller=reserva&action=mis_reservas');
-                exit;
+                exit; // Asegúrate de detener la ejecución después de la redirección
             } else {
                 echo "Error al crear la reserva.";
             }
         } else {
             echo "Error: Datos POST incompletos o incorrectos.";
         }
-    }       
+    }
     
     public function edit($id) {
         if ($_SESSION['role'] != 3) {

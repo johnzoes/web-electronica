@@ -5,7 +5,12 @@ class Item {
     private static $conexion;
 
     public static function init() {
-        self::$conexion = $GLOBALS['conexion'];
+        global $conexion;
+        self::$conexion = $conexion;
+    }
+
+    public static function setConexion($conexion) {
+        self::$conexion = $conexion;
     }
 
     /**
@@ -65,11 +70,11 @@ class Item {
      * @throws Exception
      */
     public static function update($id, $data) {
-        $stmt = self::$conexion->prepare("UPDATE item SET codigo_bci = ?, descripcion = ?, cantidad = ?, estado = ?, marca = ?, modelo = ?, imagen = ?, id_ubicacion = ?, nro_inventariado = ?, id_categoria = ? WHERE id_item = ?");
+        $stmt = self::$conexion->prepare("UPDATE item SET codigo_bci = ?, descripcion = ?, cantidad = ?, estado = ?, marca = ?, modelo = ?, imagen = ?, id_ubicacion = ?, nro_inventariado = ?, id_categoria = ?, es_unico = ? WHERE id_item = ?");
         if ($stmt === false) {
             throw new Exception("Error preparando la consulta: " . self::$conexion->error);
         }
-        $stmt->bind_param("ssissssssii", $data['codigo_bci'], $data['descripcion'], $data['cantidad'], $data['estado'], $data['marca'], $data['modelo'], $data['imagen'], $data['id_ubicacion'], $data['nro_inventariado'], $data['id_categoria'], $id);
+        $stmt->bind_param("ssissssssiii", $data['codigo_bci'], $data['descripcion'], $data['cantidad'], $data['estado'], $data['marca'], $data['modelo'], $data['imagen'], $data['id_ubicacion'], $data['nro_inventariado'], $data['id_categoria'], $data['es_unico'], $id);
         return $stmt->execute();
     }
 

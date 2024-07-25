@@ -69,6 +69,8 @@ class Reserva {
      * @throws Exception
      */
     public static function update($id, $data) {
+        // Actualizar reserva y manejar cantidad de ítems no únicos
+        self::updateItemsQuantity($data['items']);
         $stmt = self::$conexion->prepare("UPDATE reserva SET fecha_prestamo = ?, id_profesor = ?, id_unidad_didactica = ?, id_turno = ? WHERE id_reserva = ?");
         if ($stmt === false) {
             throw new Exception("Error preparando la consulta: " . self::$conexion->error);
@@ -166,6 +168,17 @@ class Reserva {
         $result = $stmt->get_result();
         return $result->fetch_assoc();
     }    
+
+    private static function updateItemsQuantity($items) {
+        foreach ($items as $itemId => $quantity) {
+            $stmt = self::$conexion->prepare("UPDATE item SET cantidad = cantidad - ? WHERE id_item = ? AND es_unico = 0");
+            if ($stmt === false) {
+                throw new Exception("Error preparando la consulta: " . self::$conexion->error);
+            }
+            $stmt->bind_param("ii", $quantity, $itemId);
+            $stmt->execute();
+        }
+    }
 }
 
 Reserva::init();

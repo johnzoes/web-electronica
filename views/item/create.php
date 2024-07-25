@@ -62,6 +62,10 @@ $ubicaciones = Ubicacion::all();
             <label for="id_categoria">Categoría:</label>
             <input type="text" class="form-control" id="id_categoria" name="id_categoria" value="<?php echo htmlspecialchars($id_categoria); ?>" readonly>
         </div>
+        <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="es_unico" name="es_unico">
+            <label class="form-check-label" for="es_unico">Es único</label>
+        </div>
         <button type="submit" class="btn btn-primary">Crear Item</button>
     </form>
 </div>
