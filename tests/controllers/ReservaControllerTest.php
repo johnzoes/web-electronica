@@ -9,7 +9,7 @@ class ReservaControllerTest extends TestCase {
         global $conexion;
         $this->controller = new ReservaController($conexion);
         $_SESSION['role'] = 3; // Asegúrate de que el rol del usuario está establecido
-        $_SESSION['user_id'] = 1; // Establece un user_id para las pruebas
+        $_SESSION['user_id'] = 1; // Establece un user_id para las pruebas, asegurándote que este id exista en `profesor`
     }
 
     public function testStoreReserva() {
@@ -20,29 +20,17 @@ class ReservaControllerTest extends TestCase {
             'id_turno' => 1
         ];
 
-        // Limpia las cabeceras previas
-        if (function_exists('xdebug_get_headers')) {
-            xdebug_get_headers();
-        }
-
         ob_start();
         $this->controller->store();
-        ob_end_clean();
+        $output = ob_get_clean();
+        
+        // Depuración
+        echo "Datos POST en prueba: ";
+        print_r($_POST);
+        echo "<br>Variables de sesión en prueba: ";
+        print_r($_SESSION);
+        echo "<br>Output: $output<br>";
 
-        // Imprime todas las cabeceras para depuración
-        $headers = headers_list();
-        foreach ($headers as $header) {
-            echo $header . "\n";
-        }
-
-        $found = false;
-        foreach ($headers as $header) {
-            if (strpos($header, 'Location: index.php?controller=reserva&action=mis_reservas') !== false) {
-                $found = true;
-                break;
-            }
-        }
-
-        $this->assertTrue($found, 'Expected header not found in: ' . print_r($headers, true));
+        $this->assertEquals('redirect:index.php?controller=reserva&action=mis_reservas', $output, "Error: No se redirigió correctamente.");
     }
 }

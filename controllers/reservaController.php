@@ -70,12 +70,22 @@ class ReservaController {
 
     public function store() {
         if ($_SESSION['role'] != 3) {
-            header('Location: index.php?controller=reserva&action=index');
-            exit;
+            echo 'Redirección por rol incorrecto.<br>';
+            return 'redirect:index.php?controller=reserva&action=index';
         }
+    
+        echo 'Datos POST: ';
+        print_r($_POST);
+        echo '<br>';
+    
+        echo 'Variables de sesión: ';
+        print_r($_SESSION);
+        echo '<br>';
     
         if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['item']) && isset($_POST['fecha_prestamo']) && isset($_POST['unidad_didactica']) && isset($_POST['id_turno'])) {
             $selectedItems = $_POST['item'];
+    
+            echo 'POST validado correctamente.<br>';
     
             // Obtener id_profesor y nombre del profesor de la tabla profesor usando id_usuario de la sesión
             $stmt = $this->conexion->prepare("SELECT p.id_profesor, u.nombre, u.apellidos FROM profesor p JOIN usuario u ON p.id_usuario = u.id_usuario WHERE p.id_usuario = ?");
@@ -85,8 +95,8 @@ class ReservaController {
             $profesor = $result->fetch_assoc();
     
             if (!$profesor) {
-                echo "Error: Profesor no encontrado.";
-                return;
+                echo "Error: Profesor no encontrado.<br>";
+                return "Error: Profesor no encontrado.";
             }
     
             $data = [
@@ -95,6 +105,10 @@ class ReservaController {
                 'id_profesor' => $profesor['id_profesor'], // Utilizar el id_profesor obtenido
                 'id_turno' => $_POST['id_turno'],
             ];
+    
+            echo 'Datos para crear reserva: ';
+            print_r($data);
+            echo '<br>';
     
             $reservaId = Reserva::create($data);
             $fecha_reserva = date('Y-m-d');
@@ -135,15 +149,17 @@ class ReservaController {
                     $notification->save();
                 }
     
-                header('Location: index.php?controller=reserva&action=mis_reservas');
-                exit; // Asegúrate de detener la ejecución después de la redirección
+                echo 'Redirección exitosa.<br>';
+                return 'redirect:index.php?controller=reserva&action=mis_reservas';
             } else {
-                echo "Error al crear la reserva.";
+                echo "Error al crear la reserva.<br>";
+                return "Error al crear la reserva.";
             }
         } else {
-            echo "Error: Datos POST incompletos o incorrectos.";
+            echo 'Error: Datos POST incompletos o incorrectos.<br>';
+            return "Error: Datos POST incompletos o incorrectos.";
         }
-    }
+    }                      
     
     public function edit($id) {
         if ($_SESSION['role'] != 3) {
