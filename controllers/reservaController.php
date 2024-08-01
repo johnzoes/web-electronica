@@ -71,7 +71,8 @@ class ReservaController {
     public function store() {
         if ($_SESSION['role'] != 3) {
             echo 'Redirección por rol incorrecto.<br>';
-            return 'redirect:index.php?controller=reserva&action=index';
+            header('Location: index.php?controller=reserva&action=index');
+            exit;
         }
     
         echo 'Datos POST: ';
@@ -89,6 +90,10 @@ class ReservaController {
     
             // Obtener id_profesor y nombre del profesor de la tabla profesor usando id_usuario de la sesión
             $stmt = $this->conexion->prepare("SELECT p.id_profesor, u.nombre, u.apellidos FROM profesor p JOIN usuario u ON p.id_usuario = u.id_usuario WHERE p.id_usuario = ?");
+            if (!$stmt) {
+                echo "Error preparando la consulta: " . $this->conexion->error . "<br>";
+                exit;
+            }
             $stmt->bind_param("i", $_SESSION['user_id']);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -96,7 +101,7 @@ class ReservaController {
     
             if (!$profesor) {
                 echo "Error: Profesor no encontrado.<br>";
-                return "Error: Profesor no encontrado.";
+                exit;
             }
     
             $data = [
@@ -131,35 +136,46 @@ class ReservaController {
                     'motivo_rechazo' => '',
                 ]);
     
-                // Crear notificación para todos los asistentes
+                // Crear notificación para los asistentes encargados del id_salon y turno
                 $estado_reserva = 'pendiente';
-                $message = "Reserva $estado_reserva creada por el profesor " . $profesor['nombre'] . " " . $profesor['apellidos'];
+                $message = $reservaId. " Reserva $estado_reserva creada por el profesor " . $profesor['nombre'] . " " . $profesor['apellidos'];
     
-                $stmt = $this->conexion->prepare("SELECT id_usuario FROM asistente");
-                $stmt->execute();
-                $result = $stmt->get_result();
-                $assistants = $result->fetch_all(MYSQLI_ASSOC);
+                $stmt = $this->conexion->prepare("SELECT id_usuario FROM asistente WHERE id_salon = ? AND id_turno = ?");
+                foreach ($selectedItems as $itemId) {
+                    $id_salon = Salon::getIdSalonbyIdItem($itemId);
+                    if (!$stmt) {
+                        echo "Error preparando la consulta: " . $this->conexion->error . "<br>";
+                        exit;
+                    }
+                    $stmt->bind_param("ii", $id_salon, $_POST['id_turno']);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    $assistants = $result->fetch_all(MYSQLI_ASSOC);
     
-                foreach ($assistants as $assistant) {
-                    $notification = new Notification();
-                    $notification->user_id = $assistant['id_usuario'];
-                    $notification->message = $message;
-                    $notification->is_read = 0;
-                    $notification->id_reserva = $reservaId;
-                    $notification->save();
+                    foreach ($assistants as $assistant) {
+                        $notification = new Notification();
+                        $notification->user_id = $assistant['id_usuario'];
+                        $notification->message = $message;
+                        $notification->is_read = 0;
+                        $notification->id_reserva = $reservaId;
+                        $notification->save();
+                    }
                 }
     
                 echo 'Redirección exitosa.<br>';
-                return 'redirect:index.php?controller=reserva&action=mis_reservas';
+                header('Location: index.php?controller=reserva&action=mis_reservas');
+                exit;
             } else {
                 echo "Error al crear la reserva.<br>";
-                return "Error al crear la reserva.";
+                exit;
             }
         } else {
             echo 'Error: Datos POST incompletos o incorrectos.<br>';
-            return "Error: Datos POST incompletos o incorrectos.";
+            exit;
         }
-    }                      
+    }
+    
+
     
     public function edit($id) {
         if ($_SESSION['role'] != 3) {
