@@ -110,7 +110,7 @@ class AsistenteController {
         $notification->save();
 
         // Redirigir al asistente a la página principal de reservas
-        header('Location: index.php?controller=asistente&action=index');
+        header('Location: index.php?controller=reserva&action=index');
         exit;
     }
 

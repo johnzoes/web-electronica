@@ -18,6 +18,29 @@ class ReservaController {
     }
 
     public function index() {
+
+        //LOGICA PARA OBTENER TODOS LOS DATOS DE LOS DETALLES DE RESERVA
+        $asistentes = Asistente::all();
+        $datos_asistente = [];
+        foreach ($asistentes as $asistente) {
+            $usuario = Usuario::find($asistente['id_usuario']);
+            if ($usuario) {
+                $turno = Turno::find($asistente['id_turno']);
+                $salon = Salon::find($asistente['id_salon']);
+                $datos_asistente[] = [
+                    'id_usuario' => $asistente['id_usuario'],
+                    'id_asistente' => $asistente['id_asistente'],
+                    'nombre_usuario' => $usuario['nombre_usuario'],
+                    'nombre' => $usuario['nombre'],
+                    'apellidos' => $usuario['apellidos'],
+                    'nombre_turno' => $turno['nombre'],
+                    'id_salon' => $salon['nombre_salon']
+                ];
+            }
+        }
+        $reservas_pendientes = Reserva::allWithDetails();
+
+
         $rol = isset($_SESSION['role']) ? $_SESSION['role'] : null;
     
         // Obtener notificaciones no leídas

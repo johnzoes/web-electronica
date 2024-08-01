@@ -1,6 +1,4 @@
-<?php
-require_once 'models/estado_reserva.php';
-?>
+
 
 <div class="container-main">
     <h2 class="my-4 poppins-bold">Lista de Asistentes</h2>
@@ -38,58 +36,3 @@ require_once 'models/estado_reserva.php';
             <?php endif; ?>
         </tbody>
     </table>
-
-    <h2 class="my-4 poppins-bold">Lista de Reservas Pendientes</h2>
-    <table class="table-modern">
-        <thead>
-            <tr>
-                <th>ID Reserva</th>
-                <th>Fecha Prestamo</th>
-                <th>Unidad Didactica</th>
-                <th>Turno</th>
-                <th>Profesor</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($reservas_pendientes as $reserva): ?>
-                <tr>
-                    <td><?php echo htmlspecialchars($reserva['id_reserva'], ENT_QUOTES, 'UTF-8'); ?></td>
-                    <td><?php echo htmlspecialchars($reserva['fecha_prestamo'], ENT_QUOTES, 'UTF-8'); ?></td>
-                    <td><?php echo htmlspecialchars($reserva['nombre_unidad_didactica'], ENT_QUOTES, 'UTF-8'); ?></td>
-                    <td><?php echo htmlspecialchars($reserva['nombre_turno'], ENT_QUOTES, 'UTF-8'); ?></td>
-                    <td><?php echo htmlspecialchars($reserva['nombre_profesor'], ENT_QUOTES, 'UTF-8'); ?></td>
-                    <td>
-                    <?php $estadoReserva = EstadoReserva::getEstadoByReserva($reserva['id_reserva']); ?>
-
-<?php if ($estadoReserva['estado'] == 'Pendiente'): ?>
-    <a href="index.php?controller=asistente&action=actualizar_estado_reserva&id_reserva=<?php echo htmlspecialchars($reserva['id_reserva'], ENT_QUOTES, 'UTF-8'); ?>&nuevo_estado=aprobado" class="btn btn-success btn-sm">
-        Aceptar
-    </a>
-    <a href="index.php?controller=asistente&action=actualizar_estado_reserva&id_reserva=<?php echo htmlspecialchars($reserva['id_reserva'], ENT_QUOTES, 'UTF-8'); ?>&nuevo_estado=rechazado" class="btn btn-danger btn-sm">
-        Rechazar
-    </a>
-<?php elseif ($estadoReserva['estado'] == 'Aprobado'): ?>
-    <a href="index.php?controller=asistente&action=actualizar_estado_reserva&id_reserva=<?php echo htmlspecialchars($reserva['id_reserva'], ENT_QUOTES, 'UTF-8'); ?>&nuevo_estado=prestado" class="btn btn-primary btn-sm">
-        Se prestó
-    </a>
-<?php elseif ($estadoReserva['estado'] == 'Prestado'): ?>
-    <a href="index.php?controller=asistente&action=actualizar_estado_reserva&id_reserva=<?php echo htmlspecialchars($reserva['id_reserva'], ENT_QUOTES, 'UTF-8'); ?>&nuevo_estado=devuelto" class="btn btn-primary btn-sm">
-        Devuelto
-    </a>
-<?php elseif ($estadoReserva['estado'] == 'Devuelto'): ?>
-    <span class="badge bg-success">Finalizado</span>
-<?php endif; ?>
-
-                        
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-            <?php if (empty($reservas_pendientes)): ?>
-                <tr>
-                    <td colspan="6">No hay reservas pendientes</td>
-                </tr>
-            <?php endif; ?>
-        </tbody>
-    </table>
-</div>
