@@ -6,7 +6,6 @@ require_once 'models/estado_reserva.php';
     <button id="btnTable1">Reservas Pendientes</button>
     <button id="btnTable2">Historial Reservas</button>
     <button id="btnTable3">Reservas Rechazadas</button>
-
 </div>
 
 <div id="reservasPendientesContainer" class="table-container">
@@ -24,14 +23,14 @@ require_once 'models/estado_reserva.php';
         </thead>
         <tbody>
             <?php 
-            $hasVisibleReservations = false; // Variable para controlar si hay reservas visibles
+            $hasVisibleReservations = false; 
 
             foreach ($reservas_pendientes as $reserva):
                 $estadoReserva = EstadoReserva::getEstadoByReserva($reserva['id_reserva']);
                 if ($estadoReserva['estado'] == 'Rechazado' || $estadoReserva['estado'] == 'Devuelto') {
-                    continue; // Omite esta reserva si está rechazada o devuelta
+                    continue;
                 }
-                $hasVisibleReservations = true; // Marca que hay reservas visibles
+                $hasVisibleReservations = true; 
             ?>
                 <tr>
                     <td><?php echo htmlspecialchars($reserva['id_reserva'], ENT_QUOTES, 'UTF-8'); ?></td>
@@ -51,7 +50,8 @@ require_once 'models/estado_reserva.php';
                             <span class="badge bg-success">Finalizado</span>
                         <?php elseif ($estadoReserva['estado'] == 'Rechazado'): ?>
                             <span class="badge bg-danger">Rechazado</span>
-                        <?php endif; ?> 
+                        <?php endif; ?>
+                        <button class="btn btn-info btn-sm ver-detalles" data-reserva='<?php echo json_encode($reserva, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>'>Ver</button>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -64,6 +64,7 @@ require_once 'models/estado_reserva.php';
     </table>
 </div>
 
+<div id="modal-container"></div>
 
 <div id="historialReservasContainer" class="table-container" style="display: none;">
     <h2 class="my-4 poppins-bold">Historial de Reservas</h2>
@@ -80,12 +81,12 @@ require_once 'models/estado_reserva.php';
         </thead>
         <tbody>
             <?php
-            $showNoDataMessage = true; // Variable para controlar si mostrar el mensaje de "No hay datos"
+            $showNoDataMessage = true; 
 
             foreach ($reservas as $reserva):
                 $estadoReserva = EstadoReserva::getEstadoByReserva($reserva['id_reserva']);
                 if ($estadoReserva['estado'] == 'Devuelto'): 
-                    $showNoDataMessage = false; // Cambia a false si hay al menos una reserva aprobada
+                    $showNoDataMessage = false; 
             ?>
                 <tr>
                     <td><?php echo htmlspecialchars($reserva['id_reserva'], ENT_QUOTES, 'UTF-8'); ?></td>
@@ -110,8 +111,6 @@ require_once 'models/estado_reserva.php';
     </table>
 </div>
 
-
-
 <div id="reservasRechazadasContainer" class="table-container" style="display: none;">
     <h2 class="my-4 poppins-bold">Reservas Rechazadas</h2>
     <table id="table_reservas_rechazadas" class="table-modern">
@@ -127,12 +126,12 @@ require_once 'models/estado_reserva.php';
         </thead>
         <tbody>
             <?php
-            $showNoDataMessage = true; // Variable para controlar si mostrar el mensaje de "No hay datos"
+            $showNoDataMessage = true; 
 
             foreach ($reservas as $reserva):
                 $estadoReserva = EstadoReserva::getEstadoByReserva($reserva['id_reserva']);
                 if ($estadoReserva['estado'] == 'Rechazado'): 
-                    $showNoDataMessage = false; // Cambia a false si hay al menos una reserva rechazada
+                    $showNoDataMessage = false; 
             ?>
                 <tr>
                     <td><?php echo htmlspecialchars($reserva['id_reserva'], ENT_QUOTES, 'UTF-8'); ?></td>
@@ -182,6 +181,25 @@ document.addEventListener('DOMContentLoaded', function() {
         historialReservasContainer.style.display = 'none';
         reservasRechazadasContainer.style.display = 'block';
     });
-});
 
+    document.querySelectorAll('.ver-detalles').forEach(button => {
+        button.addEventListener('click', function () {
+            const reserva = JSON.parse(this.getAttribute('data-reserva'));
+            const idReserva = reserva.id_reserva;
+
+            fetch('views/reserva/modal_detalle_reserva.php?id_reserva=' + idReserva)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('modal-container').innerHTML = html;
+
+                    const modalElement = document.getElementById('detalleReservaModal');
+                    const modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement);
+                    modalInstance.show();
+                })
+                .catch(error => {
+                    console.error('Error fetching modal content:', error);
+                });
+        });
+    });
+});
 </script>

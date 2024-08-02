@@ -126,6 +126,16 @@ class Item {
         $result = $stmt->get_result();
         return $result->fetch_all(MYSQLI_ASSOC);
     }
+
+
+    public static function getItemsByIdReserva($id_reserva){
+        $stmt = self::$conexion->prepare("CALL getItemsByIdReserva(?)");
+        $stmt->bind_param("i", $id_reserva);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
+
+    }
 }
 
 Item::init();
