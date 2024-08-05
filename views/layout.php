@@ -33,7 +33,8 @@ if (isset($_SESSION['user_id'])) {
         rel="stylesheet">
 
     <link rel="stylesheet" href="views/font-poppins.css">
-    <link rel="stylesheet" href="views/ubicacion/styles.css">
+
+    <link rel="stylesheet" href="views/styles.css">
 
     <title>Inventariado</title>
 </head>
