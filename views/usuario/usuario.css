@@ -19,7 +19,7 @@ h2 {
     border-radius: 12px;
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    height: 10rem; /* Ajusta la altura según sea necesario */
+    height: 15rem; /* Ajusta la altura según sea necesario */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -35,7 +35,7 @@ h2 {
 }
 
 .card-title {
-    font-size: 1.5rem;
+    font-size: 2rem;
     margin: 0;
     color: #fff;
 
@@ -49,4 +49,13 @@ h2 {
     padding: 10px 20px;
     font-weight: bold;
     text-transform: uppercase;
+    
+}
+
+
+.container{
+    padding: 0;
+    background-color: rgb(255, 255, 255);
+    margin-top: 40px;
+    width: 50rem;
 }
