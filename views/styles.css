@@ -1,11 +1,11 @@
 /* views/styles.css */
 
-.navbar{
+.navbar {
     justify-content: center;
     align-items: center;
     background-color: transparent;
+    width: 100%;
 }
-
 
 body, html {
     font-family: 'Poppins', sans-serif;
@@ -15,17 +15,16 @@ body, html {
     height: 100%;
 }
 
-.container-main{
+.container-main {
     max-width: 90%;
     margin: 0 auto;
     background-color: #ffffff;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 20px 100px;
     border-radius: 10px;
- 
 }
 
-.container-nav{
+.container-nav {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -34,11 +33,13 @@ body, html {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     background-color: #fff;
-
 }
 
-.container{
+.container {
     padding: 40px 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .table-modern {
@@ -53,7 +54,7 @@ body, html {
     font-weight: bold;
     text-transform: uppercase;
     padding: 15px;
-    text-align: left;
+    text-align: left; /* Alineación del texto a la izquierda */
     border-top-left-radius: 0px; /* Bordes redondeados para la primera celda */
     border-top-right-radius: 0px; /* Bordes redondeados para la última celda */
     border-bottom: 2px solid #dee2e6; /* Línea inferior para separar del cuerpo */
@@ -80,6 +81,7 @@ body, html {
     padding: 15px;
     vertical-align: middle;
     background: #ffffff;
+    text-align: left; /* Alineación del texto a la izquierda */
 }
 
 .table-modern thead th:first-child {
@@ -87,7 +89,7 @@ body, html {
     border-bottom-left-radius: 8px;
 }
 
-.table-modern thead td:last-child {
+.table-modern thead th:last-child {
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
 }
@@ -116,7 +118,6 @@ body, html {
 }
 
 .icon {
-    fill: white; /* Cambia el color a rojo */
-  }
-  
+    fill: white; /* Cambia el color a blanco */
+}
 

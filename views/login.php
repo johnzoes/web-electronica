@@ -13,7 +13,7 @@
     <div class="background"></div>
     <div class="container d-flex justify-content-center align-items-center vh-100">
         <div class="login-box">
-            <h2 class="mb-4">Iniciar Sesión</h2>
+            <h2 class="mb-4 poppins-black">Iniciar Sesión</h2>
             <?php if (isset($error)): ?>
                 <div class="alert alert-danger"><?php echo $error; ?></div>
             <?php endif; ?>
