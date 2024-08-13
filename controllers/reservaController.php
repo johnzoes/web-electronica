@@ -105,6 +105,9 @@ class ReservaController {
         echo 'Variables de sesión: ';
         print_r($_SESSION);
         echo '<br>';
+
+
+        /* se obtienen los datos para la reserva */
     
         if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['item']) && isset($_POST['fecha_prestamo']) && isset($_POST['unidad_didactica']) && isset($_POST['id_turno'])) {
             $selectedItems = $_POST['item'];

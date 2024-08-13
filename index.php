@@ -86,7 +86,7 @@ try {
         }
 
         if (method_exists($controller, $actionName)) {
-            if (in_array($actionName, ['edit', 'update', 'delete', 'showPDF', 'downloadPDF', 'view', 'actualizar_estado_reserva'])) {
+            if (in_array($actionName, ['edit', 'update', 'delete', 'showPDF', 'downloadPDF', 'view', 'actualizar_estado_reserva', 'fetch'])) {
                 if (isset($_GET['id']) || isset($_GET['id_reserva'])) {
                     $id = isset($_GET['id']) ? $_GET['id'] : $_GET['id_reserva'];
                     $nuevo_estado = isset($_GET['nuevo_estado']) ? $_GET['nuevo_estado'] : '';

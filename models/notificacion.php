@@ -6,9 +6,9 @@ class Notification {
     public $is_read;
     public $id_reserva;
 
-    public function __construct() {
-        $this->db = connectDatabase();
-    }
+        public function __construct() {
+            $this->db = connectDatabase();
+        }
 
     public function save() {
         $query = "INSERT INTO notifications (user_id, message, is_read, id_reserva) VALUES (?, ?, ?, ?)";
