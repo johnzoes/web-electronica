@@ -34,11 +34,22 @@ class NotificacionController {
 
 
     // En tu NotificationController (o el controlador relevante)
-public function fetch() {
-    header('Content-Type: application/json');
-    $user_id = $_SESSION['user_id'];
-    $notificaciones = Notification::getByUserId($user_id);
-    echo json_encode($notificaciones);
-}
+    public function fetca(){
+        // Asegúrate de que el usuario esté autenticado y autorizado
+        if (!isset($_SESSION['user_id'])) {
+            header('HTTP/1.0 403 Forbidden');
+            exit;
+        }
+    
+        // Obtén las notificaciones del usuario
+        $userId = $_SESSION['user_id'];
+        $notifications = Notification::getByUserId($userId);
+    
+        // Enviar respuesta en formato JSON
+        header('Content-Type: application/json');
+        echo json_encode($notifications);
+    }
+    
+    
 
 }

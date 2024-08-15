@@ -7,7 +7,6 @@ if (session_status() == PHP_SESSION_NONE) {
 
 $rol = isset($_SESSION['role']) ? $_SESSION['role'] : null;
 ?>
-<link rel="stylesheet" href="styles.css">
 
 <div class="container">
     <h2 class="my-4 poppins-bold">Lista de Ubicaciones</h2>
