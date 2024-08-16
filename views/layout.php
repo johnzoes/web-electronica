@@ -73,12 +73,14 @@
                                     href="index.php?controller=reserva&action=index">Reserva</a>
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="notificaciones-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-bell"></i>
-                                    <?php if (isset($notificaciones_no_leidas) && $notificaciones_no_leidas > 0): ?>
-                                        <span class="badge bg-danger"><?php echo $notificaciones_no_leidas; ?></span>
-                                    <?php endif; ?>
-                                </a>
+                            <a class="nav-link dropdown-toggle" href="#" id="notificaciones-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge bg-danger <?php echo $notificaciones_no_leidas > 0 ? '' : 'd-none'; ?>">
+                    <?php echo $notificaciones_no_leidas; ?>
+                        </span>
+                        </a>
+
+
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificaciones-dropdown">
                                     <?php if (isset($notificaciones) && !empty($notificaciones)): ?>
                                         <?php foreach ($notificaciones as $notificacion): ?>
@@ -124,45 +126,54 @@
 
     /*script para las notificaciones se actualizen cada 10 segundos*/
     <script>
-    function fetchNotifications() {
-        console.log("Checking for new notifications...");
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', 'index.php?controller=notificacion&action=fetchUnreadCount', true);
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status === 200) {
-                    try {
-                        console.log("Response received:", xhr.responseText);
-                        const response = JSON.parse(xhr.responseText);
-                        const unreadCount = response.unread_count;
 
-                        // Actualizar el número en la campana de notificaciones
-                        const notificationBell = document.querySelector('.nav-link .badge');
 
-                        // Si hay nuevas notificaciones, actualizar el contenido de la campana
+function fetchNotifications() {
+    console.log("Checking for new notifications...");
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', 'index.php?controller=notificacion&action=fetchUnreadCount', true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                try {
+                    console.log("Response received:", xhr.responseText);
+                    const response = JSON.parse(xhr.responseText);
+
+                    if (response.error) {
+                        console.error("Server Error:", response.error);
+                        return;
+                    }
+
+                    const unreadCount = response.unread_count;
+                    const notificationBell = document.querySelector('.nav-link .badge');
+
+                    if (notificationBell) {
                         if (unreadCount > 0) {
                             notificationBell.textContent = unreadCount;
-                            notificationBell.classList.remove('d-none');  // Mostrar el badge si está oculto
+                            notificationBell.classList.remove('d-none');
                         } else {
-                            notificationBell.classList.add('d-none');  // Ocultar el badge si no hay notificaciones
+                            notificationBell.classList.add('d-none');
                         }
-                    } catch (e) {
-                        console.error("Failed to parse JSON response:", e);
+                    } else {
+                        console.error("Notification bell element not found!");
                     }
-                } else {
-                    console.error("Request failed with status:", xhr.status);
+                } catch (e) {
+                    console.error("Failed to parse JSON response:", e);
                 }
+            } else {
+                console.error("Request failed with status:", xhr.status);
             }
-        };
-        xhr.onerror = function() {
-            console.error("Request failed");
-        };
-        xhr.send();
-    }
+        }
+    };
+    xhr.onerror = function() {
+        console.error("Request failed");
+    };
+    xhr.send();
+}
 
-    // Llamar a la función inicialmente y cada 10 segundos
-    setInterval(fetchNotifications, 10000);
-    fetchNotifications();
+setInterval(fetchNotifications, 10000);
+fetchNotifications();
+
 </script>
 
 
