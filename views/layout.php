@@ -123,40 +123,48 @@
 
 
     /*script para las notificaciones se actualizen cada 10 segundos*/
-        <script>
-        function fetchNotifications() {
-            console.log("Fetching notifications...");
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', 'index.php?controller=notificacion&action=fetca', true);
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                    console.log("Response received:", xhr.responseText);
-                    const notifications = JSON.parse(xhr.responseText);
-                    const notificationList = document.getElementById('notification-list');
-                    notificationList.innerHTML = '';
+    <script>
+    function fetchNotifications() {
+        console.log("Checking for new notifications...");
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'index.php?controller=notificacion&action=fetchUnreadCount', true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    try {
+                        console.log("Response received:", xhr.responseText);
+                        const response = JSON.parse(xhr.responseText);
+                        const unreadCount = response.unread_count;
 
-                    if (notifications.length > 0) {
-                        notifications.forEach(notification => {
-                            const listItem = document.createElement('li');
-                            listItem.className = 'list-group-item';
-                            listItem.innerHTML = `<a href="index.php?controller=notificacion&action=view&id=${notification.id}" target="_blank">${notification.message}</a>`;
-                            notificationList.appendChild(listItem);
-                        });
-                    } else {
-                        notificationList.innerHTML = '<li class="list-group-item">No hay notificaciones</li>';
+                        // Actualizar el número en la campana de notificaciones
+                        const notificationBell = document.querySelector('.nav-link .badge');
+
+                        // Si hay nuevas notificaciones, actualizar el contenido de la campana
+                        if (unreadCount > 0) {
+                            notificationBell.textContent = unreadCount;
+                            notificationBell.classList.remove('d-none');  // Mostrar el badge si está oculto
+                        } else {
+                            notificationBell.classList.add('d-none');  // Ocultar el badge si no hay notificaciones
+                        }
+                    } catch (e) {
+                        console.error("Failed to parse JSON response:", e);
                     }
+                } else {
+                    console.error("Request failed with status:", xhr.status);
                 }
-            };
-            xhr.onerror = function() {
-                console.error("Request failed");
-            };
-            xhr.send();
-        }
+            }
+        };
+        xhr.onerror = function() {
+            console.error("Request failed");
+        };
+        xhr.send();
+    }
 
-        // Llamar a la función inicialmente y cada 10 segundos
-        setInterval(fetchNotifications, 10000);
-        fetchNotifications();
-    </script>
+    // Llamar a la función inicialmente y cada 10 segundos
+    setInterval(fetchNotifications, 10000);
+    fetchNotifications();
+</script>
+
 
 
     </body>

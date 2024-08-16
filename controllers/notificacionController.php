@@ -49,6 +49,15 @@ class NotificacionController {
         header('Content-Type: application/json');
         echo json_encode($notifications);
     }
+public function fetchUnreadCount() {
+    if (isset($_SESSION['user_id'])) {
+        $unreadCount = Notification::countUnreadByUser($_SESSION['user_id']);
+        echo json_encode(['unread_count' => $unreadCount]);
+    } else {
+        echo json_encode(['unread_count' => 0]);
+    }
+}
+
     
     
 
