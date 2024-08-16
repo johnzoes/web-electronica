@@ -53,7 +53,7 @@
                             <?php if ($_SESSION['role'] != 3): ?>
                                 <li class="nav-item">
                                     <a class="nav-link poppins-medium"
-                                        href="index.php?controller=ubicacion&action=index">Ubicación</a>
+                                        href="Sindex.php?controller=ubicacion&action=index">Ubicación</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link poppins-medium"
