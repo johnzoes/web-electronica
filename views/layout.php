@@ -101,6 +101,10 @@
                                 <a class="nav-link poppins-medium" href="index.php?controller=auth&action=logout">Cerrar
                                     sesión</a>
                             </li>
+
+                            <span class="badge bg-danger <?php echo $notificaciones_no_leidas > 0 ? '' : 'd-none'; ?>" id="unread-count">
+                            <?php echo $notificaciones_no_leidas; ?>
+                            </span>
                         </ul>
                     </div>
                 </div>
@@ -124,56 +128,34 @@
         <script src="views/notificaciones/index.php"></script>
 
 
-    /*script para las notificaciones se actualizen cada 10 segundos*/
-    <script>
-
-
+<script>
 function fetchNotifications() {
-    console.log("Checking for new notifications...");
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'index.php?controller=notificacion&action=fetchUnreadCount', true);
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-            if (xhr.status === 200) {
-                try {
-                    console.log("Response received:", xhr.responseText);
-                    const response = JSON.parse(xhr.responseText);
+        console.log("Verificando nuevas notificaciones...");
+        $.ajax({
+            url: 'index.php?controller=notificacion&action=fetchUnreadCount',
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                const unreadCount = response.unread_count;
+                const notificationBell = document.getElementById('unread-count');
 
-                    if (response.error) {
-                        console.error("Server Error:", response.error);
-                        return;
-                    }
-
-                    const unreadCount = response.unread_count;
-                    const notificationBell = document.querySelector('.nav-link .badge');
-
-                    if (notificationBell) {
-                        if (unreadCount > 0) {
-                            notificationBell.textContent = unreadCount;
-                            notificationBell.classList.remove('d-none');
-                        } else {
-                            notificationBell.classList.add('d-none');
-                        }
-                    } else {
-                        console.error("Notification bell element not found!");
-                    }
-                } catch (e) {
-                    console.error("Failed to parse JSON response:", e);
+                if (unreadCount > 0) {
+                    notificationBell.textContent = unreadCount;
+                    notificationBell.classList.remove('d-none');
+                } else {
+                    notificationBell.classList.add('d-none');
                 }
-            } else {
-                console.error("Request failed with status:", xhr.status);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error al obtener las notificaciones:", error);
             }
-        }
-    };
-    xhr.onerror = function() {
-        console.error("Request failed");
-    };
-    xhr.send();
-}
+        });
+    }
 
-setInterval(fetchNotifications, 10000);
-fetchNotifications();
-
+    // Verificar cada 10 segundos
+    setInterval(fetchNotifications, 10000);
+    // Ejecutar inmediatamente al cargar la página
+    fetchNotifications();
 </script>
 
 
