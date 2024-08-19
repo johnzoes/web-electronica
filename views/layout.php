@@ -35,12 +35,15 @@
         <link rel="stylesheet" href="views/font-poppins.css">
 
         <link rel="stylesheet" href="views/styles.css">
+<!-- En tu HTML, asegúrate de tener el archivo de sonido -->
 
         <title>Inventariado</title>
     </head>
 
     <body>
         <header>
+        <audio id="notification-sound" src="assets/sounds/notification-sound.mp3" preload="auto"></audio>
+
             <nav class="navbar navbar-expand-lg navbar-light">
                 <div class="container-nav">
                     <a class="navbar-brand poppins-semibold" href="#">SISTEMA</a>
@@ -53,7 +56,7 @@
                             <?php if ($_SESSION['role'] != 3): ?>
                                 <li class="nav-item">
                                     <a class="nav-link poppins-medium"
-                                        href="Sindex.php?controller=ubicacion&action=index">Ubicación</a>
+                                        href="index.php?controller=ubicacion&action=index">Ubicación</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link poppins-medium"
@@ -102,9 +105,6 @@
                                     sesión</a>
                             </li>
 
-                            <span class="badge bg-danger <?php echo $notificaciones_no_leidas > 0 ? '' : 'd-none'; ?>" id="unread-count">
-                            <?php echo $notificaciones_no_leidas; ?>
-                            </span>
                         </ul>
                     </div>
                 </div>
@@ -129,33 +129,45 @@
 
 
 <script>
+
 function fetchNotifications() {
-        console.log("Verificando nuevas notificaciones...");
-        $.ajax({
-            url: 'index.php?controller=notificacion&action=fetchUnreadCount',
-            method: 'GET',
-            dataType: 'json',
-            success: function(response) {
-                const unreadCount = response.unread_count;
-                const notificationBell = document.getElementById('unread-count');
+    console.log("Verificando nuevas notificaciones...");
+    $.ajax({
+        url: 'index.php?controller=notificacion&action=fetchUnreadCount',
+        method: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            const unreadCount = response.unread_count;
+            const notificationBell = document.getElementById('notificaciones-dropdown');
+            const previousUnreadCount = notificationBell.getAttribute('data-unread-count') || 0;
 
-                if (unreadCount > 0) {
-                    notificationBell.textContent = unreadCount;
-                    notificationBell.classList.remove('d-none');
-                } else {
-                    notificationBell.classList.add('d-none');
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error("Error al obtener las notificaciones:", error);
+            // Actualizar el número de notificaciones no leídas directamente en la campana
+            if (unreadCount > 0) {
+                notificationBell.innerHTML = `<i class="fas fa-bell"></i> <span class="badge bg-danger">${unreadCount}</span>`;
+            } else {
+                notificationBell.innerHTML = `<i class="fas fa-bell"></i>`;
             }
-        });
-    }
 
-    // Verificar cada 10 segundos
-    setInterval(fetchNotifications, 10000);
-    // Ejecutar inmediatamente al cargar la página
-    fetchNotifications();
+            // Comprobar si hay nuevas notificaciones
+            if (unreadCount > previousUnreadCount) {
+                // Reproducir sonido si hay nuevas notificaciones
+                document.getElementById('notification-sound').play();
+            }
+
+            // Guardar el nuevo conteo en un atributo personalizado
+            notificationBell.setAttribute('data-unread-count', unreadCount);
+        },
+        error: function(xhr, status, error) {
+            console.error("Error al obtener las notificaciones:", error);
+        }
+    });
+}
+
+// Verificar cada 10 segundos
+setInterval(fetchNotifications, 10000);
+// Ejecutar inmediatamente al cargar la página
+fetchNotifications();
+
 </script>
 
 
