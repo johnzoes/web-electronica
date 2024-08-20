@@ -1,6 +1,7 @@
 <?php
 require_once 'models/estado_reserva.php';
 ?>
+<link rel="stylesheet" href="views/reserva/reserva.css">
 
 <div class="button-container">
     <button id="btnTable1">Reservas Pendientes</button>

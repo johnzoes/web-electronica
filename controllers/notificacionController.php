@@ -32,25 +32,6 @@ class NotificacionController {
         exit;
     }
 
-
-    // En tu NotificationController (o el controlador relevante)
-    public function fetca() {
-        // Asegúrate de que el usuario esté autenticado
-        if (!isset($_SESSION['user_id'])) {
-            header('HTTP/1.0 403 Forbidden');
-            echo json_encode(['error' => 'User not authenticated']);
-            exit;
-        }
-    
-        // Obtén las notificaciones del usuario
-        $userId = $_SESSION['user_id'];
-        $notifications = Notification::getByUserId($userId);
-    
-        // Enviar respuesta en formato JSON
-        header('Content-Type: application/json');
-        echo json_encode($notifications);
-    }
-    
     public function fetchUnreadCount() {
         if (isset($_SESSION['user_id'])) {
             $unreadCount = Notification::countUnreadByUser($_SESSION['user_id']);

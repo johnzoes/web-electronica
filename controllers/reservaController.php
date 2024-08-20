@@ -260,6 +260,7 @@ class ReservaController {
     }
 
     public function showPDF($id) {
+        $itemsReserva = Item::getItemsByIdReserva($id);
         $reserva = Reserva::findWithDetails($id);
     
         if (!$reserva) {
@@ -271,20 +272,50 @@ class ReservaController {
         $pdf->AddPage();
         $pdf->SetFont('Arial', 'B', 16);
     
-        $pdf->Cell(40, 10, utf8_decode('Detalles de la Reserva'));
-        $pdf->Ln();
-        $pdf->Cell(40, 10, utf8_decode('ID: ' . $reserva['id_reserva']));
-        $pdf->Ln();
-        $pdf->Cell(40, 10, utf8_decode('Fecha de Prestamo: ' . $reserva['fecha_prestamo']));
-        $pdf->Ln();
-        $pdf->Cell(40, 10, utf8_decode('Unidad Didactica: ' . $reserva['nombre_unidad_didactica']));
-        $pdf->Ln();
-        $pdf->Cell(40, 10, utf8_decode('Turno: ' . $reserva['nombre_turno']));
-        $pdf->Ln();
-        $pdf->Cell(40, 10, utf8_decode('Profesor: ' . $reserva['nombre_profesor']));
+        // Título de la reserva
+        $pdf->Cell(0, 10, utf8_decode('Detalles de la Reserva'), 0, 1, 'C');
+        $pdf->Ln(10);
     
+        // Detalles de la reserva
+        $pdf->SetFont('Arial', '', 12);
+        $pdf->Cell(0, 10, utf8_decode('ID: ') . $reserva['id_reserva']);
+        $pdf->Ln();
+        $pdf->Cell(0, 10, utf8_decode('Fecha de Préstamo: ') . $reserva['fecha_prestamo']);
+        $pdf->Ln();
+        $pdf->Cell(0, 10, utf8_decode('Unidad Didáctica: ') . utf8_decode($reserva['nombre_unidad_didactica']));
+        $pdf->Ln();
+        $pdf->Cell(0, 10, utf8_decode('Turno: ') . utf8_decode($reserva['nombre_turno']));
+        $pdf->Ln();
+        $pdf->Cell(0, 10, utf8_decode('Profesor: ') . utf8_decode($reserva['nombre_profesor']));
+        $pdf->Ln(10);
+    
+        // Encabezado de la tabla
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(30, 10, utf8_decode('Código BCI'), 1);
+        $pdf->Cell(60, 10, utf8_decode('Descripción'), 1);
+       /* $pdf->Cell(20, 10, utf8_decode('Cantidad'), 1);
+        $pdf->Cell(30, 10, utf8_decode('Estado'), 1);
+        $pdf->Cell(30, 10, utf8_decode('Marca'), 1);*/
+        $pdf->Cell(30, 10, utf8_decode('Modelo'), 1);
+        $pdf->Ln();
+    
+        // Datos de los items
+        $pdf->SetFont('Arial', '', 12);
+        foreach ($itemsReserva as $item) {
+            $pdf->Cell(30, 10, $item['codigo_bci'], 1);
+            $pdf->Cell(60, 10, utf8_decode($item['descripcion']), 1);
+          /*  $pdf->Cell(20, 10, $item['cantidad'], 1);
+            $pdf->Cell(30, 10, utf8_decode($item['estado']), 1);
+            $pdf->Cell(30, 10, utf8_decode($item['marca']), 1);*/
+            $pdf->Cell(30, 10, utf8_decode($item['modelo']), 1);
+            $pdf->Ln();
+        }
+    
+        // Salida del PDF
         $pdf->Output('I', 'reserva_' . $reserva['id_reserva'] . '.pdf');
-    }             
+    }
+    
+           
 
     public function downloadPDF($id) {
         $reserva = Reserva::findWithDetails($id);
