@@ -124,6 +124,26 @@ class Asistente {
         $result = $db->query($query);
         return $result->fetch_all(MYSQLI_ASSOC);
     }
+
+    public static function getAsistantsByItemId($item_id, $turno_id){
+        $query = "SELECT a.id_asistente, a.id_turno, a.id_salon 
+                  FROM asistente a
+                  JOIN salon sa ON a.id_salon = sa.id_salon
+                  JOIN ubicacion u ON sa.id_salon = u.id_salon
+                  JOIN item it ON u.id_ubicacion = it.id_ubicacion
+                  WHERE it.id_item = ? AND a.id_turno = ?";
+                  
+        $stmt = self::$conexion->prepare($query);
+        if ($stmt) {
+            $stmt->bind_param("ii", $item_id, $turno_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            return $result->fetch_assoc(); // Devuelve solo una fila asociativa
+        }
+        return null; // En caso de que no haya resultado
+    }
+    
+    
 }
 
 Asistente::init();

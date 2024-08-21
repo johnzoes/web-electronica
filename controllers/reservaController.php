@@ -111,6 +111,13 @@ class ReservaController {
     
         if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['item']) && isset($_POST['fecha_prestamo']) && isset($_POST['unidad_didactica']) && isset($_POST['id_turno'])) {
             $selectedItems = $_POST['item'];
+        
+            //SE SELECCIONA AL ASISTENTE POR ID ITEM
+
+            foreach($selectedItems as )
+
+            $asistants_item = Asistente::getAsistantsByItemId()
+
     
             echo 'POST validado correctamente.<br>';
     
@@ -147,12 +154,21 @@ class ReservaController {
     
             if ($reservaId) {
                 foreach ($selectedItems as $itemId) {
+
+                    //obtenemos el asistente encargado del item por item y por turno, nos devolvera solo una fila
+
+                    $asistente_found = Asistente::getAsistantsByItemId($itemId,  $_POST['id_turno'] )
+
+ 
+
                     $id_salon = Salon::getIdSalonbyIdItem($itemId);
                     DetalleReservaItem::create([
                         'id_reserva' => $reservaId,
                         'id_item' => $itemId,
                         'fecha_reserva' => $fecha_reserva,
                         'hora_reserva' => $hora_reserva,
+                        // aca falta agregar el asistente en la detalle reserva item de la base de datos
+                        'id_asistente' => $asistente_found,
                     ]);
                 }
     
