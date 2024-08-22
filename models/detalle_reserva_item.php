@@ -48,13 +48,33 @@ class DetalleReservaItem {
      * @throws Exception
      */
     public static function create($data) {
+        // Preparar la consulta de inserción
         $stmt = self::$conexion->prepare("INSERT INTO detalle_reserva_item (id_reserva, id_item, fecha_reserva, hora_reserva) VALUES (?, ?, ?, ?)");
         if ($stmt === false) {
             throw new Exception("Error preparando la consulta: " . self::$conexion->error);
         }
+        
+        // Enlazar los parámetros
         $stmt->bind_param("iiss", $data['id_reserva'], $data['id_item'], $data['fecha_reserva'], $data['hora_reserva']);
-        return $stmt->execute();
+        
+        // Ejecutar la consulta
+        $result = $stmt->execute();
+        
+        // Verificar errores
+        if ($stmt->error) {
+            throw new Exception("Error ejecutando la consulta: " . $stmt->error);
+        }
+        
+        // Obtener el ID del nuevo registro
+        $insertedId = self::$conexion->insert_id;
+        
+        // Cerrar la declaración
+        $stmt->close();
+        
+        // Devolver el ID del nuevo registro
+        return $insertedId;
     }
+    
 
     /**
      * Actualiza un detalle de reserva de item por ID.

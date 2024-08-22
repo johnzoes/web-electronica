@@ -15,7 +15,7 @@ class EstadoReserva {
      * @throws Exception
      */
     public static function all() {
-        $result = self::$conexion->query("SELECT * FROM estado_reserva");
+        $result = self::$conexion->query("SELECT * FROM estado_reserva_item");
         if ($result === false) {
             throw new Exception("Error en la consulta: " . self::$conexion->error);
         }
@@ -30,7 +30,7 @@ class EstadoReserva {
      * @throws Exception
      */
     public static function find($id) {
-        $stmt = self::$conexion->prepare("SELECT * FROM estado_reserva WHERE id_estado = ?");
+        $stmt = self::$conexion->prepare("SELECT * FROM estado_reserva_item WHERE id_estado = ?");
         if ($stmt === false) {
             throw new Exception("Error preparando la consulta: " . self::$conexion->error);
         }
@@ -41,30 +41,27 @@ class EstadoReserva {
     }
 
     /**
-     * Encuentra el estado de una reserva por ID de reserva.
+     * Encuentra el estado de una reserva por ID de detalle.
      *
-     * @param int $id_reserva
+     * @param int $id_detalle
      * @return array|null
      * @throws Exception
      */
-
-public static function getEstadoByReserva($id_reserva) {
-    $stmt = self::$conexion->prepare("SELECT * FROM estado_reserva WHERE id_reserva = ? ORDER BY id_estado DESC LIMIT 1");
-    if ($stmt === false) {
-        throw new Exception("Error preparando la consulta: " . self::$conexion->error);
+    public static function getEstadoByDetalle($id_detalle) {
+        $stmt = self::$conexion->prepare("SELECT * FROM estado_reserva_item WHERE id_detalle = ? ORDER BY id_estado DESC LIMIT 1");
+        if ($stmt === false) {
+            throw new Exception("Error preparando la consulta: " . self::$conexion->error);
+        }
+        $stmt->bind_param("i", $id_detalle);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc();
     }
-    $stmt->bind_param("i", $id_reserva);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    return $result->fetch_assoc();
-}
 
-    
     /*Crea un nuevo estado de reserva.*/
- 
     public static function create($data) {
         // Preparar la llamada al procedimiento almacenado
-        $stmt = self::$conexion->prepare("CALL InsertEstadoReserva(?, ?, ?)");
+        $stmt = self::$conexion->prepare("CALL InsertEstadoItem(?, ?, ?)");
         
         if ($stmt === false) {
             throw new Exception("Error preparando la consulta: " . self::$conexion->error);
@@ -72,9 +69,9 @@ public static function getEstadoByReserva($id_reserva) {
     
         // Enlazar parámetros, excluyendo fecha y hora
         $stmt->bind_param("iss", 
-            $data['id_reserva'], 
+            $data['id_detalle'], 
             $data['estado'], 
-            $data['motivo_rechazo']
+            $data['motivo_rechazo'], 
         );
     
         // Ejecutar el procedimiento almacenado
@@ -90,7 +87,6 @@ public static function getEstadoByReserva($id_reserva) {
     
         return $result;
     }
-    
 
     /**
      * Actualiza un estado de reserva por ID.
@@ -101,11 +97,11 @@ public static function getEstadoByReserva($id_reserva) {
      * @throws Exception
      */
     public static function update($id, $data) {
-        $stmt = self::$conexion->prepare("UPDATE estado_reserva SET id_reserva = ?, estado = ?, motivo_rechazo = ?, hora_estado = ?, fecha_estado = ? WHERE id_estado = ?");
+        $stmt = self::$conexion->prepare("UPDATE estado_reserva_item SET id_detalle = ?, estado = ?, motivo_rechazo = ?, hora_estado = ?, fecha_estado = ? WHERE id_estado = ?");
         if ($stmt === false) {
             throw new Exception("Error preparando la consulta: " . self::$conexion->error);
         }
-        $stmt->bind_param("issssi", $data['id_reserva'], $data['estado'], $data['motivo_rechazo'], $data['hora_estado'], $data['fecha_estado'], $id);
+        $stmt->bind_param("issssi", $data['id_detalle'], $data['estado'], $data['motivo_rechazo'], $data['hora_estado'], $data['fecha_estado'], $id);
         return $stmt->execute();
     }
 
@@ -117,7 +113,7 @@ public static function getEstadoByReserva($id_reserva) {
      * @throws Exception
      */
     public static function delete($id) {
-        $stmt = self::$conexion->prepare("DELETE FROM estado_reserva WHERE id_estado = ?");
+        $stmt = self::$conexion->prepare("DELETE FROM estado_reserva_item WHERE id_estado = ?");
         if ($stmt === false) {
             throw new Exception("Error preparando la consulta: " . self::$conexion->error);
         }
@@ -125,19 +121,20 @@ public static function getEstadoByReserva($id_reserva) {
         return $stmt->execute();
     }
 
-    public static function updateByReservaId($id_reserva, $data) {
+    public static function updateByDetalleId($id_detalle, $data) {
         // Preparar la llamada al procedimiento almacenado
-        $stmt = self::$conexion->prepare("CALL InsertEstadoReserva(?, ?, ?)");
+        $stmt = self::$conexion->prepare("CALL InsertEstadoReserva(?, ?, ?, ?)");
         
         if ($stmt === false) {
             throw new Exception("Error preparando la consulta: " . self::$conexion->error);
         }
     
         // Enlazar parámetros, excluyendo fecha y hora
-        $stmt->bind_param("iss", 
-            $id_reserva, 
+        $stmt->bind_param("isss", 
+            $id_detalle, 
             $data['estado'], 
-            $data['motivo_rechazo']
+            $data['motivo_rechazo'], 
+            $data['hora_estado']
         );
     
         // Ejecutar el procedimiento almacenado
@@ -154,7 +151,5 @@ public static function getEstadoByReserva($id_reserva) {
         return $result;
     }     
 }
-
-
 
 EstadoReserva::init();
