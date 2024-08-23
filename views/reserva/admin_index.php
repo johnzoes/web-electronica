@@ -23,49 +23,9 @@ require_once 'models/estado_reserva.php';
             </tr>
         </thead>
         <tbody>
-            <?php 
-            $hasVisibleReservations = false; 
+           
+        
 
-            //tenemos todos los detallesc de los items luego lo agrupamos por id_asistente
-
-
-            foreach ($reservas_pendientes as $reserva):
-
-                //se obtiene el estado de cada detalle o item
-                $estadoReservaItem = EstadoReserva::getEstadoByDetalle($reserva['id_reserva']);
-                if ($estadoReservaItem['estado'] == 'Rechazado' || $estadoReservaItem['estado'] == 'Devuelto') {
-                    continue;
-                }
-                $hasVisibleReservations = true; 
-            ?>
-                <tr>
-                    <td><?php echo htmlspecialchars($reserva['id_reserva'], ENT_QUOTES, 'UTF-8'); ?></td>
-                    <td><?php echo htmlspecialchars($reserva['fecha_prestamo'], ENT_QUOTES, 'UTF-8'); ?></td>
-                    <td><?php echo htmlspecialchars($reserva['nombre_unidad_didactica'], ENT_QUOTES, 'UTF-8'); ?></td>
-                    <td><?php echo htmlspecialchars($reserva['nombre_turno'], ENT_QUOTES, 'UTF-8'); ?></td>
-                    <td><?php echo htmlspecialchars($reserva['nombre_profesor'], ENT_QUOTES, 'UTF-8'); ?></td>
-                    <td>
-                        <?php if ($estadoReservaItem['estado'] == 'Pendiente'): ?>
-                            <a href="index.php?controller=asistente&action=actualizar_estado_reserva&id_reserva=<?php echo htmlspecialchars($reserva['id_reserva'], ENT_QUOTES, 'UTF-8'); ?>&nuevo_estado=aprobado" class="btn btn-success btn-sm">Aceptar</a>
-                            <a href="index.php?controller=asistente&action=actualizar_estado_reserva&id_reserva=<?php echo htmlspecialchars($reserva['id_reserva'], ENT_QUOTES, 'UTF-8'); ?>&nuevo_estado=rechazado" class="btn btn-danger btn-sm">Rechazar</a>
-                        <?php elseif ($estadoReservaItem['estado'] == 'Aprobado'): ?>
-                            <a href="index.php?controller=asistente&action=actualizar_estado_reserva&id_reserva=<?php echo htmlspecialchars($reserva['id_reserva'], ENT_QUOTES, 'UTF-8'); ?>&nuevo_estado=prestado" class="btn btn-primary btn-sm">Se prestó</a>
-                        <?php elseif ($estadoReservaItem['estado'] == 'Prestado'): ?>
-                            <a href="index.php?controller=asistente&action=actualizar_estado_reserva&id_reserva=<?php echo htmlspecialchars($reserva['id_reserva'], ENT_QUOTES, 'UTF-8'); ?>&nuevo_estado=devuelto" class="btn btn-primary btn-sm">Devuelto</a>
-                        <?php elseif ($estadoReservaItem['estado'] == 'Devuelto'): ?>
-                            <span class="badge bg-success">Finalizado</span>
-                        <?php elseif ($estadoReservaItem['estado'] == 'Rechazado'): ?>
-                            <span class="badge bg-danger">Rechazado</span>
-                        <?php endif; ?>
-                        <button class="btn btn-info btn-sm ver-detalles" data-reserva='<?php echo json_encode($reserva, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>'>Ver</button>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-            <?php if (!$hasVisibleReservations): ?>
-                <tr>
-                    <td colspan="6">No hay reservas pendientes</td>
-                </tr>
-            <?php endif; ?>
         </tbody>
     </table>
 </div>
@@ -85,35 +45,8 @@ require_once 'models/estado_reserva.php';
                 <th>Acciones</th>
             </tr>
         </thead>
-        <tbody>
-            <?php
-            $showNoDataMessage = true; 
-                
-            foreach ($reservas as $reserva):
-                $estadoReserva = EstadoReserva::getEstadoByReserva($reserva['id_reserva']);
-                if ($estadoReserva['estado'] == 'Devuelto'): 
-                    $showNoDataMessage = false; 
-            ?>
-                <tr>
-                    <td><?php echo htmlspecialchars($reserva['id_reserva'], ENT_QUOTES, 'UTF-8'); ?></td>
-                    <td><?php echo htmlspecialchars($reserva['fecha_prestamo'], ENT_QUOTES, 'UTF-8'); ?></td>
-                    <td><?php echo htmlspecialchars($reserva['nombre_unidad_didactica'], ENT_QUOTES, 'UTF-8'); ?></td>
-                    <td><?php echo htmlspecialchars($reserva['nombre_turno'], ENT_QUOTES, 'UTF-8'); ?></td>
-                    <td><?php echo htmlspecialchars($reserva['nombre_profesor'], ENT_QUOTES, 'UTF-8'); ?></td>
-                    <td>
-                        <button class="btn btn-primary btn-sm" onclick="window.open('index.php?controller=reserva&action=showPDF&id=<?php echo $reserva['id_reserva']; ?>')">Ver Reserva</button>
-                        <a href="index.php?controller=reserva&action=downloadPDF&id=<?php echo htmlspecialchars($reserva['id_reserva'], ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-secondary btn-sm">Descargar</a>
-                    </td>
-                </tr>
-            <?php
-                endif;
-            endforeach;
-            if ($showNoDataMessage): ?>
-                <tr>
-                    <td colspan="6">No hay reservas aprobadas</td>
-                </tr>
-            <?php endif; ?>
-        </tbody>
+       
+
     </table>
 </div>
 
@@ -131,32 +64,10 @@ require_once 'models/estado_reserva.php';
             </tr>
         </thead>
         <tbody>
-            <?php
-            $showNoDataMessage = true; 
+          
 
-            foreach ($reservas as $reserva):
-                $estadoReserva = EstadoReserva::getEstadoByReserva($reserva['id_reserva']);
-                if ($estadoReserva['estado'] == 'Rechazado'): 
-                    $showNoDataMessage = false; 
-            ?>
-                <tr>
-                    <td><?php echo htmlspecialchars($reserva['id_reserva'], ENT_QUOTES, 'UTF-8'); ?></td>
-                    <td><?php echo htmlspecialchars($reserva['fecha_prestamo'], ENT_QUOTES, 'UTF-8'); ?></td>
-                    <td><?php echo htmlspecialchars($reserva['nombre_unidad_didactica'], ENT_QUOTES, 'UTF-8'); ?></td>
-                    <td><?php echo htmlspecialchars($reserva['nombre_turno'], ENT_QUOTES, 'UTF-8'); ?></td>
-                    <td><?php echo htmlspecialchars($reserva['nombre_profesor'], ENT_QUOTES, 'UTF-8'); ?></td>
-                    <td>
-                        <span class="badge bg-danger">Rechazado</span>
-                    </td>
-                </tr>
-            <?php
-                endif;
-            endforeach;
-            if ($showNoDataMessage): ?>
-                <tr>
-                    <td colspan="6">No hay reservas rechazadas</td>
-                </tr>
-            <?php endif; ?>
+
+
         </tbody>
     </table>
 </div>
