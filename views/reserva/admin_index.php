@@ -27,7 +27,7 @@ require_once 'models/estado_reserva.php';
             $hasVisibleReservations = false; 
 
             //tenemos todos los detallesc de los items luego lo agrupamos por id_asistente
-            
+
 
             foreach ($reservas_pendientes as $reserva):
 
@@ -88,7 +88,7 @@ require_once 'models/estado_reserva.php';
         <tbody>
             <?php
             $showNoDataMessage = true; 
-
+                
             foreach ($reservas as $reserva):
                 $estadoReserva = EstadoReserva::getEstadoByReserva($reserva['id_reserva']);
                 if ($estadoReserva['estado'] == 'Devuelto'): 
