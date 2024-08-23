@@ -26,9 +26,14 @@ require_once 'models/estado_reserva.php';
             <?php 
             $hasVisibleReservations = false; 
 
+            //tenemos todos los detallesc de los items luego lo agrupamos por id_asistente
+            
+
             foreach ($reservas_pendientes as $reserva):
-                $estadoReserva = EstadoReserva::getEstadoByReserva($reserva['id_reserva']);
-                if ($estadoReserva['estado'] == 'Rechazado' || $estadoReserva['estado'] == 'Devuelto') {
+
+                //se obtiene el estado de cada detalle o item
+                $estadoReservaItem = EstadoReserva::getEstadoByDetalle($reserva['id_reserva']);
+                if ($estadoReservaItem['estado'] == 'Rechazado' || $estadoReservaItem['estado'] == 'Devuelto') {
                     continue;
                 }
                 $hasVisibleReservations = true; 
@@ -40,16 +45,16 @@ require_once 'models/estado_reserva.php';
                     <td><?php echo htmlspecialchars($reserva['nombre_turno'], ENT_QUOTES, 'UTF-8'); ?></td>
                     <td><?php echo htmlspecialchars($reserva['nombre_profesor'], ENT_QUOTES, 'UTF-8'); ?></td>
                     <td>
-                        <?php if ($estadoReserva['estado'] == 'Pendiente'): ?>
+                        <?php if ($estadoReservaItem['estado'] == 'Pendiente'): ?>
                             <a href="index.php?controller=asistente&action=actualizar_estado_reserva&id_reserva=<?php echo htmlspecialchars($reserva['id_reserva'], ENT_QUOTES, 'UTF-8'); ?>&nuevo_estado=aprobado" class="btn btn-success btn-sm">Aceptar</a>
                             <a href="index.php?controller=asistente&action=actualizar_estado_reserva&id_reserva=<?php echo htmlspecialchars($reserva['id_reserva'], ENT_QUOTES, 'UTF-8'); ?>&nuevo_estado=rechazado" class="btn btn-danger btn-sm">Rechazar</a>
-                        <?php elseif ($estadoReserva['estado'] == 'Aprobado'): ?>
+                        <?php elseif ($estadoReservaItem['estado'] == 'Aprobado'): ?>
                             <a href="index.php?controller=asistente&action=actualizar_estado_reserva&id_reserva=<?php echo htmlspecialchars($reserva['id_reserva'], ENT_QUOTES, 'UTF-8'); ?>&nuevo_estado=prestado" class="btn btn-primary btn-sm">Se prestó</a>
-                        <?php elseif ($estadoReserva['estado'] == 'Prestado'): ?>
+                        <?php elseif ($estadoReservaItem['estado'] == 'Prestado'): ?>
                             <a href="index.php?controller=asistente&action=actualizar_estado_reserva&id_reserva=<?php echo htmlspecialchars($reserva['id_reserva'], ENT_QUOTES, 'UTF-8'); ?>&nuevo_estado=devuelto" class="btn btn-primary btn-sm">Devuelto</a>
-                        <?php elseif ($estadoReserva['estado'] == 'Devuelto'): ?>
+                        <?php elseif ($estadoReservaItem['estado'] == 'Devuelto'): ?>
                             <span class="badge bg-success">Finalizado</span>
-                        <?php elseif ($estadoReserva['estado'] == 'Rechazado'): ?>
+                        <?php elseif ($estadoReservaItem['estado'] == 'Rechazado'): ?>
                             <span class="badge bg-danger">Rechazado</span>
                         <?php endif; ?>
                         <button class="btn btn-info btn-sm ver-detalles" data-reserva='<?php echo json_encode($reserva, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>'>Ver</button>

@@ -39,7 +39,7 @@ class ReservaController {
             }
         }
         $reservas_pendientes = Reserva::allWithDetails();
-
+        $detalle_item = DetalleReservaItem::all();
 
         $rol = isset($_SESSION['role']) ? $_SESSION['role'] : null;
     
