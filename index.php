@@ -24,7 +24,7 @@ require_once 'models/database.php';
 require_once 'models/notificacion.php';
 
 $controllerName = isset($_GET['controller']) ? htmlspecialchars($_GET['controller']) : 'categoria';
-$actionName = isset($_GET['action']) ? htmlspecialchars($_GET['action']) : 'index';
+$actionName = isset($_GET['action']) ? htmlspecialchars(string: $_GET['action']) : 'index';
 
 $controllers = [
     'item' => 'ItemController',
@@ -86,7 +86,7 @@ try {
         }
 
         if (method_exists($controller, $actionName)) {
-            if (in_array($actionName, ['edit', 'update', 'delete', 'showPDF', 'downloadPDF', 'view', 'actualizar_estado_reserva'])) {
+            if (in_array($actionName, haystack: ['edit', 'update', 'delete', 'showPDF', 'downloadPDF', 'view', 'actualizar_estado_reserva'])) {
                 if (isset($_GET['id']) || isset($_GET['id_reserva'])) {
                     $id = isset($_GET['id']) ? $_GET['id'] : $_GET['id_reserva'];
                     $nuevo_estado = isset($_GET['nuevo_estado']) ? $_GET['nuevo_estado'] : '';

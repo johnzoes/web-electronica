@@ -81,24 +81,57 @@ document.addEventListener('DOMContentLoaded', function() {
     const historialReservasContainer = document.getElementById('historialReservasContainer');
     const reservasRechazadasContainer = document.getElementById('reservasRechazadasContainer');
 
+    function loadReservas(type, tableBodyId) {
+        fetch('views/reserva/get_reservas.php?type=' + type)
+
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.querySelector(`#${tableBodyId} tbody`);
+                tbody.innerHTML = '';  // Limpiar la tabla antes de cargar los nuevos datos
+
+                data.forEach(reserva => {
+                    const row = `
+                        <tr>
+                            <td>${reserva.id_reserva}</td>
+                            <td>${reserva.fecha_prestamo}</td>
+                            <td>${reserva.unidad_didactica}</td>
+                            <td>${reserva.turno}</td>
+                            <td>${reserva.profesor}</td>
+                            <td>
+                                <button class="ver-detalles" data-reserva='${JSON.stringify(reserva)}'>Ver Detalles</button>
+                            </td>
+                        </tr>`;
+                    tbody.insertAdjacentHTML('beforeend', row);
+                });
+            })
+            .catch(error => console.error('Error al cargar las reservas:', error));
+    }
+
     btnTable1.addEventListener('click', function() {
         reservasPendientesContainer.style.display = 'block';
         historialReservasContainer.style.display = 'none';
         reservasRechazadasContainer.style.display = 'none';
+        loadReservas('pendientes', 'table_reservas_pendientes');
     });
 
     btnTable2.addEventListener('click', function() {
         reservasPendientesContainer.style.display = 'none';
         historialReservasContainer.style.display = 'block';
         reservasRechazadasContainer.style.display = 'none';
+        loadReservas('historial', 'table_historial_reservas');
     });
 
     btnTable3.addEventListener('click', function() {
         reservasPendientesContainer.style.display = 'none';
         historialReservasContainer.style.display = 'none';
         reservasRechazadasContainer.style.display = 'block';
+        loadReservas('rechazadas', 'table_reservas_rechazadas');
     });
 
+    // Cargar inicialmente las reservas pendientes al cargar la página
+    loadReservas('pendientes', 'table_reservas_pendientes');
+
+    // Ver detalles de una reserva
     document.querySelectorAll('.ver-detalles').forEach(button => {
         button.addEventListener('click', function () {
             const reserva = JSON.parse(this.getAttribute('data-reserva'));
